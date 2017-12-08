@@ -20,6 +20,11 @@ class User extends BaseUser
      */
     protected $id;
 
+    /**
+     * @ORM\OneToMany(targetEntity="LybraryBundle\Entity\Book", mappedBy="user")
+     */
+    private $book;
+
     public function __construct()
     {
         parent::__construct();
