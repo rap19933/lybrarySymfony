@@ -1,0 +1,376 @@
+
+      <?
+     global $USER;
+     $USER->Authorize(1);
+      data("gdfgsg");
+      ?>
+
+<?
+function data($arr, $params=false){
+    if($params) $str = 'class="prered"';
+    else $str = 'class="preblack"';
+    echo "<style type=\"text/css\">
+                div.tim {font-size:12px; color: blue;}
+                div.prered {font-size:10px; color: red;}
+                div.preblack {font-size:10px;}
+          </style>";
+    echo '<div class="tim">';
+    echo date("H:i:s")."</br>";
+    echo "</div>";
+
+    echo "<div $str>";
+    echo "<pre>";
+    print_r($arr);
+    echo "</pre>";
+    echo "</div>";
+}
+
+
+
+
+
+
+//avarda.class.php
+
+    public function GetBalanceWarehouses2($arItems, $warehouses)
+    {
+        global $APPLICATION;
+        if (empty($warehouses)) {
+            $arErrors[] = "Не указаны склады";
+        }
+        if (!$arItems || empty($arItems)) {
+            $arErrors[] = "Не указаны товары";
+        }
+        $arCheckErrors = $priceAvailErrors = array();
+        $storeId = Cities::getStoreForSale();
+        if (! ($avarda = $this->getClient())) return false;;
+        $result = null;
+        $arErrors = [];
+        $arArticle = [];
+        //data($arItems);
+        foreach ($arItems as $keyItem => &$arItem) {
+            $avarda->GetBalanceWarehouses($arItem["ARTICLE"], $warehouses, $result);
+            // data($arItem);
+            if (is_object($result) && property_exists($result, 'info') && is_object($result->info) && property_exists($result->info, 'result')) {
+                if ($result->info->result) {
+                    if (is_object($result->info->warehouses) && property_exists($result->info->warehouses, 'warehouse')) {
+                        $arLines = array();
+                        if (is_array($result->info->warehouses->warehouse)) {
+                            $arLines = $result->info->warehouses->warehouse;
+                        } else {
+                            $arLines[] = $result->info->warehouses->warehouse;
+                        }
+                        $avAvailable = 0;
+                        $avTotal = 0;
+                        $avPrice = 0;
+                       // data($arLines,5);
+                        foreach ($arLines as $oLine) {
+                            $avAvailable += $oLine->available;
+                            $avTotal += $oLine->total;
+                            if(!$avPrice) {
+                                $avPrice = round($oLine->price, 2);
+                            }
+                        }
+
+                        $arItem["AV_AVAILABLE"] = $avAvailable;
+                        $arItem["AV_TOTAL"] = $avTotal;
+                        $arItem["AV_PRICE"] = $avPrice;
+                        $arArticle[$keyItem] = $arItem["ARTICLE"];
+                        //data($arItem);
+                        if (($itemStoreId = Utils::getStoreForSale($arItem)) && $storeId == $itemStoreId) {
+                            if ($arItem["QUANTITY"] > $arItem["AV_AVAILABLE"]) {
+                                $priceAvailErrors[] = "Товар ".$arItem["NAME"]." <b>недоступен для заказа</b>";
+                            }
+                            $arItem["STORE_FOR_SALE"] = true;
+                        }
+                        Product::updateIsPurchaseable($arItem);
+                    }
+                } else {
+
+                    $strError = "Возникла ошибка при проверке артикулов товаров";
+                    if (property_exists($result->info, 'message')) $strError .= ": " . $result->info->message;
+                    $arErrors[] = $strError;
+                }
+            } else {
+                $arErrors[] = "Возникла ошибка при проверке артикулов товаров. Попробуйте повторить позднее.";
+            }
+        }
+        if (empty($arErrors)) {
+            $arItems["ARTICLE"] = $arArticle;
+            Product::checkProductAvailableAndPrice($storeId, $arItems, $arCheckErrors);
+        }
+
+       // data($arItems);
+
+        // errors (Avarda)
+        if (is_array($arErrors) && count($arErrors)) {
+
+            global $avardaRequests;
+            $avardaRequests["GetBalanceWarehouses"] = implode(', ', $arErrors);
+            return $this->error(implode('<br />', $arErrors));
+        }
+        // errors (price/available)
+        if (is_array($arCheckErrors) && count($arCheckErrors)) {
+            return $this->error(implode('<br />', $arCheckErrors), false, "PRICE_AVAILABLE_CHANGED");
+        }
+        // errors (price/available) without redirect
+        if (is_array($priceAvailErrors) && count($priceAvailErrors)) {
+            return $this->error(implode('<br />', $priceAvailErrors), false, "PRICE_AVAILABLE_ERROR");
+        }
+        return true;
+    }
+
+
+
+
+
+
+
+
+
+
+        // создание заявки покупателя
+    public function AddOrderEasy2($userId, $arItems, $reserve = false)
+    {
+        global $APPLICATION;
+        if (empty($userId)) {
+            $arErrors[] = "Не указан пользователь для оформления заказа";
+        }
+        if (empty($arItems)) {
+            $arErrors[] = "Не указаны товары для оформления заказа";
+        }
+        $arResult = false;
+        if (empty($arErrors)) {
+            $rsUser = CUser::GetById($userId);
+            if ($arUser = $rsUser->Fetch()) {
+                $cityData = Cities::getCityData($arUser["UF_CITY"]);
+                if (! $cityData['SALE_ENABLED']) {
+                    return $arResult;
+                }
+                // check contractor id
+                if (!$arUser["UF_CONTRACTOR_ID"]) $arUser["UF_CONTRACTOR_ID"] = $this->NewContractor($arUser["ID"]);
+                if (! ($avarda = $this->getClient())) return false;
+                $result = null;
+                $arErrors = [];
+                // stock
+                $stockId = $cityData["STOCK"];
+                // lines
+                $balanceWarehousesOk = true;
+                $arLines = [];
+
+                foreach ($arItems as $arItem) {
+                    $arLines[] = new line($arItem["ARTICLE"], $arItem["QUANTITY"], $arItem["PRICE"]);
+                }
+
+                if(!$this->GetBalanceWarehouses2($arItems, [$stockId, $cityData['PROM_STOCK']])) {
+                    $balanceWarehousesOk = false;
+                }
+
+                if ($balanceWarehousesOk) {
+
+                    $orderNumber = null;
+                    $avarda->AddOrderEasy($arUser["UF_BONUS_CARD"], $arUser["UF_CONTRACTOR_ID"], $stockId, $reserve, $arLines, $orderNumber, $result);
+                    if (is_object($result) && property_exists($result, 'info') && is_object($result->info) && property_exists($result->info, 'doc_id')) {
+
+                        if ($result->info->doc_id) {
+
+                            $arResult = array(
+                                "ID" => $result->info->doc_id,
+                                "CODE" => $result->info->doc_code,
+                                "SUM" => $result->info->doc_sum,
+                                "CHANGED" => false,
+                                "CONTRACTOR_ID" => $arUser["UF_CONTRACTOR_ID"],
+                                "STORE_ID" => $stockId
+                            );
+
+                            $arResult["ITEMS"] = array();
+                            if (is_object($result->info->lines) && property_exists($result->info->lines, 'line')) {
+
+                                $arLines = array();
+                                if (is_array($result->info->lines->line)) $arLines = $result->info->lines->line;
+                                else $arLines[] = $result->info->lines->line;
+
+                                foreach ($arLines as $oLine) {
+
+                                    // changed item
+                                    if (!$arResult["CHANGED"]) {
+                                        $arResult["CHANGED"] = (bool) $oLine->changed;
+                                    }
+
+                                    $arResult["ITEMS"][$oLine->article] = array(
+                                        "ARTICLE" => $oLine->article,
+                                        "QUANTITY" => $oLine->quantity,
+                                        "ORIGINAL_PRICE" => $oLine->original_price,
+                                        "PRICE" => $oLine->price,
+                                        "RESERV" => $oLine->reserv,
+                                        "CHANGED" => (bool) $oLine->changed,
+                                    );
+                                }
+                            }
+
+                        } else {
+
+                            $strError = "Возникла ошибка при размещении заказа";
+                            if (property_exists($result->info, 'message')) $strError .= ": " . $result->info->message;
+                            $arErrors[] = $strError;
+
+                        }
+
+                    } else $arErrors[] = "Возникла ошибка при размещении заказа. Попробуйте повторить позднее.";
+
+                } else {
+
+                    if (($error = $APPLICATION->GetException()) && $error->GetId() == "PRICE_AVAILABLE_ERROR") {
+                        return $this->error($error->GetString(), false, "PRICE_AVAILABLE_ERROR");
+                    }
+                }
+            } else $arErrors[] = "Пользователь с ID = ".$userId." не найден";
+        }
+
+        // errors
+        if (is_array($arErrors) && count($arErrors)) {
+
+            global $avardaRequests;
+            $avardaRequests["AddOrderEasy"] = implode(', ', $arErrors);
+
+            return $this->error(implode('<br />', $arErrors));
+        }
+
+        return $arResult;
+    }
+
+
+
+//product.class
+
+        // проверка и корректировка доступного кол-ва товара и цены на основе проверки в Аварде
+    static public function checkProductAvailableAndPrice($storeId, $arItems, &$arErrors)
+    {
+        if (!$storeId) return false;
+
+        Loader::includeModule("iblock");
+        Loader::includeModule("catalog");
+
+        $availPropCode = Utils::getInstockTypeByStore($storeId);
+//data($arItems);
+
+        $dbProduct = CIBlockElement::GetList(
+            [], ["IBLOCK_ID" => CATALOG_IBLOCK_ID, "PROPERTY_ARTICLE" => $arItems["ARTICLE"]],
+            false, false, ["ID", "IBLOCK_ID", "PROPERTY_ARTICLE", "PROPERTY_".$availPropCode, "NAME"]
+        );
+        $arItemsTest = [];
+        while ($arProduct = $dbProduct->Fetch()) {
+            //data($arProduct);
+            $arItemsTest[] = $arProduct["PROPERTY_ARTICLE_VALUE"];
+            $keyItem = array_search($arProduct["PROPERTY_ARTICLE_VALUE"], $arItems["ARTICLE"]);
+            // Available
+            if($arItems[$keyItem]["STORE_FOR_SALE"]){
+
+                $oldAvail = $arProduct["PROPERTY_".$availPropCode."_VALUE"];
+                $newAvail = $arItems[$keyItem]["AV_AVAILABLE"];
+
+                if ($oldAvail != $newAvail) {
+
+                    if ($arItems[$keyItem]["QUANTITY"] > $newAvail) {
+                        $arErrors[] = "Доступное количество товара <b>".$arProduct["NAME"]."</b> изменилось с ".$oldAvail." на ".$newAvail;
+                    }
+
+                    // update
+                    CIBlockElement::SetPropertyValuesEx($arProduct["ID"], $arProduct["IBLOCK_ID"], array($availPropCode => $newAvail));
+
+                    // recalc product is available
+                    self::calculateIsAvailable($arProduct["ID"]);
+                }
+            }
+            // Price
+            $dbPrice = CPrice::GetListEx(
+                array(),
+                array(
+                    "CATALOG_GROUP_ID" => Utils::getCatalogPrice($storeId)["ID"],
+                    "PRODUCT_ID" => $arProduct["ID"],
+                    "GROUP_GROUP_ID" => [2],    // check
+                    "GROUP_BUY" => "Y",
+                    "+<=QUANTITY_FROM" => $arItems[$keyItem]["QUANTITY"],
+                    "+>=QUANTITY_TO" => $arItems[$keyItem]["QUANTITY"]
+                ),
+                false,
+                false,
+                array("ID", "CATALOG_GROUP_ID", "PRICE", "CURRENCY")
+            );
+            if ($arPrice = $dbPrice->Fetch()) {
+
+                $oldPrice = $arPrice["PRICE"];
+                $newPrice = $arItems[$keyItem]["AV_PRICE"];
+
+                // check
+                if ($oldPrice != $newPrice) {
+                    $arErrors[] = "Цена товара <b>".$arProduct["NAME"]."</b> изменилась с "
+                        .Utils::showPrice($oldPrice)." на "
+                        .Utils::showPrice($newPrice);
+
+                    // update
+                    CPrice::Update($arPrice["ID"], array("PRICE" => $newPrice));
+
+                    // update view price too if store id defeault for this city
+                    $arStore = Cities::getStoreData($storeId);
+                    if ($arStore["DEFAULT"]) {
+
+                        $viewCityPropCode = Utils::$viewPricePropCode.'_'.Cities::getCityData($arStore["FILIAL"])["LID_AVARDA"];
+                        CIBlockElement::SetPropertyValuesEx($arProduct["ID"], $arProduct["IBLOCK_ID"], array($viewCityPropCode => $newPrice));
+                    }
+                }
+            }
+        }
+       // data($arItemsTest);
+        if (count($arItemsTest) != count($arItems["ARTICLE"])) {
+            foreach ($arItems["ARTICLE"] as $arItem) {
+                if (!in_array($arItem, $arItemsTest)) {
+                    $arErrors[] = "Товар с артикулом <b>".$arItem."</b> не найден";
+                }
+            }
+        }
+    }
+
+
+
+
+    //class
+
+
+        public function initAvOrder($userId)
+    {
+
+        xhprof_enable(XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY);
+        global $APPLICATION;
+        $firstLoad = $this->request->getRequestMethod() == 'GET';
+        $this->arBasketLines = AvOrder::getBasketItemsLines(null);
+
+        // redirect if basket is empty
+        if (empty($this->arBasketLines)) {
+            LocalRedirect($this->arParams["PATH_TO_BASKET"]);
+            die();
+        }
+
+        // create order
+        if (!$_SESSION["AVARDA_ORDER"] || $firstLoad) {
+            $avarda = new Avarda();
+            $_SESSION["AVARDA_ORDER"] = $avarda->AddOrderEasy2($userId, $this->arBasketLines);
+        }
+
+        // check
+        if ($error = $APPLICATION->GetException()) $this->addError($error->GetString());
+
+        // check if price or available was changed
+        if ($error && $error->GetId() == "PRICE_AVAILABLE_CHANGED") {
+            unset($_SESSION['AVARDA_ORDER']);
+            LocalRedirect($this->arParams["PATH_TO_BASKET"]);
+            die();
+        }
+
+
+        $xhprof_data = xhprof_disable();
+        include_once "/home/webmaster/data/www/9.dev.baucenter.ru/xhprof/xhprof-0.9.4/xhprof_lib/utils/xhprof_lib.php";
+        include_once "/home/webmaster/data/www/9.dev.baucenter.ru/xhprof/xhprof-0.9.4/xhprof_lib/utils/xhprof_runs.php";
+        $xhprof_runs = new XHProfRuns_Default();
+        $run_id = $xhprof_runs->save_run($xhprof_data, "OrderClass100my-3");
+    }

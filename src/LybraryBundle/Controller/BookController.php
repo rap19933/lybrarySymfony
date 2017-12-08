@@ -38,6 +38,24 @@ class BookController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+
+            $file = $book->getCover();
+            $fileName = md5(uniqid()).'.'.$file->guessExtension();
+            $file->move(
+                $this->getParameter('cover_directory'),
+                $fileName
+            );
+            $book->setCover($fileName);
+
+            $file = $book->getBookFile();
+            $fileName = md5(uniqid()).'.'.$file->guessExtension();
+            $file->move(
+                $this->getParameter('book_directory'),
+                $fileName
+            );
+            $book->setBookFile($fileName);
+
             $em = $this->getDoctrine()->getManager();
             $em->persist($book);
             $em->flush();
