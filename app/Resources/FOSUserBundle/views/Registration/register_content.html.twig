@@ -1,0 +1,21 @@
+{% trans_default_domain 'FOSUserBundle' %}
+
+
+<h5 class="tb-title">{{ 'create'|trans }}</h5>
+{% form_theme form '@FOSUser/form_layout.html.twig' %}
+
+{{ form_start( form , { 'action': path('fos_user_registration_register'), 'attr': { 'class': 'cendo' } }) }}
+    {{ form_widget(form) }}
+    <div class="col-md-12">
+        <div class="buttons">
+            <div class="pull-right">
+                <input type="submit" class="btn btn-primary" value="{{ 'registration.submit'|trans }}" />
+            </div>
+        </div>
+        <a class="btn btn-primary pull-left" href="{{ path(app.request.get('_route')) }}">Same page</a>
+    </div>
+{{ form_end( form ) }}
+
+
+
+

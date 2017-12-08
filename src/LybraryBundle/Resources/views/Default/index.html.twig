@@ -1,40 +1,106 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8" />
-    <title>{% block title %}Welcome!{% endblock %}</title>
-    {% block stylesheets %}{% endblock %}
-    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
-</head>
-<body>
-<p>Hello World!</p>
-<div>
-    {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-        {{ 'layout.logged_in_as'|trans({'%username%': app.user.username}, 'FOSUserBundle') }} |
-        <a href="{{ path('fos_user_security_logout') }}">
-            {{ 'layout.logout'|trans({}, 'FOSUserBundle') }}
-        </a>
-    {% else %}
-        <a href="{{ path('fos_user_security_login') }}">{{ 'layout.login'|trans({}, 'FOSUserBundle') }}</a>
-    {% endif %}
-</div>
 
-{% if app.request.hasPreviousSession %}
-    {% for type, messages in app.session.flashBag.all %}
-        {% for message in messages %}
-            <div class="{{ type }}">
-                {{ message|trans({}, 'FOSUserBundle') }}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <section class="pages products-page section-padding-top">
+        <div class="container">
+            <div class="row">
+
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="features-tab">
+                        <!-- Nav tabs -->
+                        <div class="shop-all-tab">
+                            <div class="re-shop">
+                                <div class="sort-by">
+                                    <div class="shop6">
+                                        <label>Sort By :</label>
+                                        <select>
+                                            <option value="">Default sorting</option>
+                                            <option value="">Sort by popularity</option>
+                                            <option value="">Sort by average rating</option>
+                                            <option value="">Sort by newness</option>
+                                            <option value="">Sort by price: low to high</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="shop5">
+                                    <label>Show :</label>
+                                    <select>
+                                        <option value="">12</option>
+                                        <option value="">24</option>
+                                        <option value="">36</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Tab panes -->
+                        <div class="tab-content">
+                            <div class="row">
+                                <!-- single-product start -->
+                                {% for i in 0..3 %}
+                                    <div class="col-md-3 col-lg-3 col-sm-6">
+                                        <div class="single-product">
+                                            <div class="product-img">
+                                                <div class="pro-type">
+                                                    <span>new</span>
+                                                </div>
+                                                <a href="#">
+                                                    <img src="{{ asset('img/products/1.jpg') }}" alt="Product Title">
+                                                    <img class="secondary-image" alt="Product Title" src="img/products/2.jpg">
+                                                </a>
+                                            </div>
+                                            <div class="product-dsc">
+                                                <h3><a href="#">Product Title</a></h3>
+                                                <div class="star-price">
+                                                    <span class="price-left">$52.00</span>
+                                                    <span class="star-right">
+                                                                        <i class="fa fa-star"></i>
+                                                                        <i class="fa fa-star"></i>
+                                                                        <i class="fa fa-star"></i>
+                                                                        <i class="fa fa-star"></i>
+                                                                        <i class="fa fa-star-half-o"></i>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="actions-btn">
+                                                <a href="#" data-placement="top" data-target="#quick-view" data-trigger="hover" data-toggle="modal" data-original-title="Quick View"><i class="fa fa-eye"></i></a>
+                                                <a data-placement="top" data-toggle="tooltip" href="#" data-original-title="Add To Wishlist"><i class="fa fa-heart"></i></a>
+                                                <a title="" data-placement="top" data-toggle="tooltip" href="#" data-original-title="Compare"><i class="fa fa-retweet"></i></a>
+                                                <a href="#" data-toggle="tooltip" data-placement="top" title="" data-original-title="Add To Cart"><i class="fa fa-shopping-cart"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- single-product end -->
+                                {% endfor %}
+
+                            </div>
+
+                        </div>
+                        <div class="shop-all-tab-cr shop-bottom">
+                            <div class="two-part">
+                                <div class="shop5 page">
+                                    <ul>
+                                        <li>
+                                            <a class="active" href="#">1</a>
+                                            <a href="#">2</a>
+                                            <a href="#">3</a>
+                                            <a href="#">4</a>
+                                            <a href="#">5</a>
+                                            <a href="#"><i class="fa fa-arrow-right"></i></a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        {% endfor %}
-    {% endfor %}
-{% endif %}
+        </div>
+    </section>
 
-<div>
-    {% block fos_user_content %}
-    {% endblock fos_user_content %}
-</div>
-{% block body %}{% endblock %}
-{% block javascripts %}{% endblock %}
+{% endblock %}
 
-</body>
-</html>
+{% block stylesheets %}
+
+{% endblock %}

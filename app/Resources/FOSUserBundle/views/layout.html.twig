@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% block user_panel %}
+        {{ parent() }}
+    {% endblock %}
+
+    {% block auth_message %}
+        {% if app.request.hasPreviousSession %}
+            {% for type, messages in app.session.flashbag.all() %}
+                {% for message in messages %}
+                    <div class="flash-{{ type }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endfor %}
+        {% endif %}
+    {% endblock %}
+
+<div class="login-area">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-md-offset-3 col-md-6">
+                <div class="tb-login-form ">
+                    {% block fos_user_content %}
+                    {% endblock fos_user_content %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

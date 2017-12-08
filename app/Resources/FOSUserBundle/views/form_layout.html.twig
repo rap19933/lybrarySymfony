@@ -1,0 +1,47 @@
+{% use "form_div_layout.html.twig" %}
+
+{% block form_widget_simple -%}
+    {% if type is not defined or type not in ['file', 'hidden'] %}
+        {%- set attr = attr|merge( {class: (attr.class|default('') ~ ' form-control')|trim}) -%}
+    {% endif %}
+    <div class="col-md-10">
+        {{- parent() -}}
+    </div>
+{%- endblock form_widget_simple %}
+
+{% block form_label -%}
+    {%- set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' col-md-2 control-label')|trim}) -%}
+    {{- parent() -}}
+{%- endblock form_label %}
+
+{% block form_row -%}
+    <div class="form-group required{% if (not compound or force_error|default(false)) and not valid %} has-error{% endif %}">
+        {{- form_errors(form) -}}
+        {{- form_label(form) -}}
+        {{- form_widget(form) -}}
+    </div>
+{%- endblock form_row %}
+
+{% block form_errors -%}
+    {% if errors|length > 0 -%}
+        <div class="col-md-12">
+        {% if form.parent %}
+            <span class="help-block">
+        {% else %}
+            <div class="alert alert-danger">
+        {% endif %}
+        <ul>
+            {%- for error in errors -%}
+                <li>
+                    <span class="fa fa-exclamation-triangle"></span> {{ error.message }}
+                </li>
+            {%- endfor -%}
+        </ul>
+        {% if form.parent %}
+            </span>
+        {% else %}
+            </div>
+        {% endif %}
+        </div>
+    {%- endif %}
+{%- endblock form_errors %}

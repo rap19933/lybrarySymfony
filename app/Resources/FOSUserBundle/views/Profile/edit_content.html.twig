@@ -1,0 +1,20 @@
+{% trans_default_domain 'FOSUserBundle' %}
+
+
+<h5 class="tb-title">csc</h5>
+
+{% form_theme form '@FOSUser/form_layout.html.twig' %}
+
+{{ form_start( form , { 'action': path('fos_user_profile_edit'), 'attr': { 'class': 'cendo' } }) }}
+    {{ form_widget(form) }}
+
+    <div class="col-md-12">
+        <div class="buttons">
+            <div class="pull-right">
+                <input type="submit" class="btn btn-primary" value="{{ 'profile.edit.submit'|trans }}" />
+            </div>
+        </div>
+        <a class="btn btn-primary pull-left" href="{{ path(app.request.get('_route')) }}">Same page</a>
+    </div>
+{{ form_end( form ) }}
+
