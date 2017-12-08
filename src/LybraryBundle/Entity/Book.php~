@@ -221,28 +221,5 @@ class Book
     {
         return $this->allowDownload;
     }
-
-    /**
-     * Set user
-     *
-     * @param \LybraryBundle\Entity\User $user
-     *
-     * @return Book
-     */
-    public function setUser(\LybraryBundle\Entity\User $user = null)
-    {
-        $this->user = $user;
-
-        return $this;
-    }
-
-    /**
-     * Get user
-     *
-     * @return \LybraryBundle\Entity\User
-     */
-    public function getUser()
-    {
-        return $this->user;
-    }
 }
+

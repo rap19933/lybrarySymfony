@@ -29,5 +29,38 @@ class User extends BaseUser
     {
         parent::__construct();
     }
-}
 
+    /**
+     * Add book
+     *
+     * @param \LybraryBundle\Entity\Book $book
+     *
+     * @return User
+     */
+    public function addBook(\LybraryBundle\Entity\Book $book)
+    {
+        $this->book[] = $book;
+
+        return $this;
+    }
+
+    /**
+     * Remove book
+     *
+     * @param \LybraryBundle\Entity\Book $book
+     */
+    public function removeBook(\LybraryBundle\Entity\Book $book)
+    {
+        $this->book->removeElement($book);
+    }
+
+    /**
+     * Get book
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getBook()
+    {
+        return $this->book;
+    }
+}
