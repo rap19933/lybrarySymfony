@@ -1,3 +1,7 @@
+lybrary_book:
+    resource: "@LybraryBundle/Resources/config/routing/book.yml"
+    prefix:   /
+
 lybrary_homepage:
-    path:     /
+    path:     /a
     defaults: { _controller: LybraryBundle:Default:index }
