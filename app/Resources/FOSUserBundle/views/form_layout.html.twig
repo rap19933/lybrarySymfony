@@ -1,5 +1,13 @@
 {% use "form_div_layout.html.twig" %}
 
+
+{% block file_widget %}
+<div class="col-md-10">
+    {% set type = type|default('file') %}
+        <input type="{{ type }}" {{ block('widget_attributes') }} class="btn btn-primary" style="width: 100%; margin-bottom: 20px"/>
+</div>
+{% endblock file_widget %}
+
 {% block form_widget_simple -%}
     {% if type is not defined or type not in ['file', 'hidden'] %}
         {%- set attr = attr|merge( {class: (attr.class|default('') ~ ' form-control')|trim}) -%}
@@ -21,6 +29,16 @@
         {{- form_widget(form) -}}
     </div>
 {%- endblock form_row %}
+
+{%- block checkbox_widget -%}
+<div class="col-md-10">
+    <div class="forgot-password1">
+        <label class="inline2" for="remember_me">
+            <input type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />
+        </label>
+    </div>
+</div>
+{%- endblock checkbox_widget -%}
 
 {% block form_errors -%}
     {% if errors|length > 0 -%}

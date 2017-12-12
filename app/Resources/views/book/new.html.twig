@@ -1,17 +1,22 @@
-{% extends 'base.html.twig' %}
+{% extends 'layout.html.twig' %}
 
-{% block body %}
+{% block contentBook %}
+
     <h1>Book creation</h1>
+    {% form_theme form '@FOSUser/form_layout.html.twig' %}
 
-    {{ form_start(form) }}
+    {{ form_start(form, { 'attr': { 'class': 'cendo' } }) }}
         {{ form_widget(form) }}
-        <input type="submit" value="Create" />
+
+    <div class="col-md-12">
+        <div class="buttons">
+            <div class="pull-right">
+                <input type="submit" class="btn btn-primary" value="Создать" />
+            </div>
+        </div>
+        <a class="btn btn-primary pull-left" href="{{ path('book_index') }}">Назад</a>
+    </div>
+
     {{ form_end(form) }}
 
-    <ul>
-        <li>
-            <a href="{{ path('book_index') }}">Back to the list</a>
-        </li>
-    </ul>
-    {{ dump(form)}}
 {% endblock %}

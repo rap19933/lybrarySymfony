@@ -35,34 +35,16 @@
                         <div class="tab-content">
                             <div class="row">
                                 {% for book in books %}
-                                  {#  <tr>
-                                        <td><a href="{{ path('book_show', { 'id': book.id }) }}">{{ book.id }}</a></td>
-                                        <td>{{ book.name }}</td>
-                                        <td>{{ book.author }}</td>
-                                        #}{#<td>{{ book.cover }}</td>#}{#
-                                        {% if book.cover %}
-                                            <td><img src="{{ asset('uploads/cover/' ~book.cover) }}"  alt="" /></td>
-                                        {% endif %}
-                                        <td>{{ book.bookFile }}</td>
-                                        <td>{% if book.dateRead %}{{ book.dateRead|date('Y-m-d H:i:s') }}{% endif %}</td>
-                                        <td>{% if book.allowDownload %}Yes{% else %}No{% endif %}</td>
-                                        <td>
-                                            <ul>
-                                                <li>
-                                                    <a href="{{ path('book_show', { 'id': book.id }) }}">show</a>
-                                                </li>
-                                                <li>
-                                                    <a href="{{ path('book_edit', { 'id': book.id }) }}">edit</a>
-                                                </li>
-                                            </ul>
-                                        </td>
-                                    </tr>#}
                                     <div class="col-md-3 col-lg-3 col-sm-6">
                                         <div class="single-product">
                                             <div class="product-img">
-                                                <div class="pro-type">
-                                                    <span>new</span>
-                                                </div>
+                                                {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                                                    {% if book.user.id == app.user.id %}
+                                                        <div class="pro-type">
+                                                            <span>Моя</span>
+                                                        </div>
+                                                    {% endif %}
+                                                {% endif %}
                                                 {% if book.cover %}
                                                     <img class="secondary-image" alt="Product Title" src="{{ asset('uploads/cover/' ~book.cover) }}">
                                                 {% endif %}
@@ -73,24 +55,20 @@
                                                     <span class="price-left">{{ book.author }}</span>
                                                     <span class="star-right">
                                                     {% if book.allowDownload and book.bookFile %}
-
-
-
-                                                        </i>
-                                                        <a href="{{ asset('uploads/book/' ~book.bookFile) }}" target="_blank" download=""><i class="fa fa-cloud-download"></i>Скачать</a>
+                                                        <a href="{{ asset('uploads/book/' ~book.bookFile) }}" target="_blank" download=""><i class="fa fa-cloud-download"></i> Скачать</a>
                                                     {% endif %}
-
-                                                                        <i class="fa fa-star"></i>
-                                                                        <i class="fa fa-star"></i>
-                                                                        <i class="fa fa-star"></i>
-                                                                        <i class="fa fa-star-half-o"></i>
                                                     </span>
                                                 </div>
                                             </div>
                                             <div class="actions-btn">
-                                                <a href="#" data-placement="top" data-target="#quick-view" data-trigger="hover" data-toggle="modal" data-original-title="Quick View"><i class="fa fa-eye"></i></a>
-                                                <a data-placement="top" data-toggle="tooltip" href="#" data-original-title="Add To Wishlist"><i class="fa fa-heart"></i></a>
-                                                <a title="" data-placement="top" data-toggle="tooltip" href="#" data-original-title="Compare"><i class="fa fa-retweet"></i></a>
+                                                <a href="{{ path('book_show', { 'id': book.id }) }}" {#data-placement="top" data-target="#quick-view" data-trigger="hover" data-toggle="modal"#} data-original-title="Посмотреть"><i class="fa fa-eye"></i></a>
+                                                {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                                                    {% if book.user.id == app.user.id %}
+                                                        <a data-placement="top" data-toggle="tooltip" href="{{ path('book_edit', { 'id': book.id }) }}" data-original-title="Редактировать"><i class="fa fa-heart"></i></a>
+                                                    {% endif %}
+                                                {% endif %}
+
+                                                <a title="" data-placement="top" data-toggle="tooltip" href="#" data-original-title="Удалить"><i class="fa fa-retweet"></i></a>
                                                 <a href="#" data-toggle="tooltip" data-placement="top" title="" data-original-title="Add To Cart"><i class="fa fa-shopping-cart"></i></a>
                                             </div>
                                         </div>

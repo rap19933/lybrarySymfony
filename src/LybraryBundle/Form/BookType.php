@@ -20,9 +20,19 @@ class BookType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, array("label" => "Название книги"))
-            ->add('author')
-            //->add('cover')
-            ->add('cover', FileType::class)
+            ->add('author', TextType::class, array("label" => "Автор книги"))
+            //->add('cover', FileType::class, array("label" => "Обложка книги"))
+            ->add('cover', FileType::class,
+                array('label' => "Обложка книги",
+                      "data_class" => null,
+                      "required" => false,
+                      'constraints' => array(
+                          new File(array(
+                              'mimeTypes' => array('image/png', 'image/jpeg'),
+                              'mimeTypesMessage' => 'Выбирете файл формата png или jpg',
+                          ))
+                      )
+                ))
             ->add('bookFile', FileType::class,
                 array('label' => "Файл книги",
                       "data_class" => null,
@@ -34,9 +44,7 @@ class BookType extends AbstractType
                           ))
                       )
             ))
-            ->add('dateRead', DateType::class, array("widget" => "single_text", "label" => "Дата прочтения"))
-            ->add('allowDownload', CheckboxType::class, array("label" => "Разрешить скачивание", "required" => false))
-            ->add('user');
+            ->add('allowDownload', CheckboxType::class, array("label" => "Разрешить скачивание", "required" => false));
     }
     
     /**

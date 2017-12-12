@@ -33,12 +33,20 @@ class BookController extends Controller
      */
     public function newAction(Request $request)
     {
+        if(!$this->getUser())
+        {
+            return $this->render('FOSUserBundle:Security:login.html.twig',
+                array('last_username' => '',
+                      'error' => '',
+                      'csrf_token' => '')
+            );
+        }
+
         $book = new Book();
         $form = $this->createForm('LybraryBundle\Form\BookType', $book);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
 
             $file = $book->getCover();
             $fileName = md5(uniqid()).'.'.$file->guessExtension();
@@ -55,6 +63,10 @@ class BookController extends Controller
                 $fileName
             );
             $book->setBookFile($fileName);
+
+            $book->setUser($this->getUser());
+
+            $book->setDateRead(date_create(date("Y-m-d H:i:s")));
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($book);

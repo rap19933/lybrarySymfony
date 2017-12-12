@@ -88,7 +88,7 @@ hr.line {
   position: relative;
 }
 .section-padding{padding:90px 0;}
-.section-padding-top{padding-top:128px;}
+.section-padding-top{padding-top:100px;}
 .section-padding-bottom{padding-bottom:90px;}
 .d-table {
     display: table;
@@ -181,7 +181,7 @@ input:focus, textarea:focus {outline: 0px;}
 ---------------------------------------*/
 /* header section */
 header {
-	background: rgba(21, 19, 19, 0.98) none repeat scroll 0 0;
+	background: rgba(21, 19, 19, 0.47) none repeat scroll 0 0;
 	position: absolute;
 	top: 0px;
 	width: 100%;
@@ -902,6 +902,8 @@ i.pe-7s-back {transform: rotateY(-180deg);}
 .single-product {
 	overflow: hidden;
 	position: relative;
+    background-color: #adafad;
+    margin-bottom: 30px;
 }
 .banner-box.banner-box-re {
   margin-bottom: 36px;
