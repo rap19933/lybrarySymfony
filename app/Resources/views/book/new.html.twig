@@ -3,6 +3,11 @@
 {% block contentBook %}
 
     <h1>Book creation</h1>
+
+    {% if error %}
+        <p style="color: red">Поле "Файл книги" обязательна для заполнения!!!</p>
+    {% endif %}
+
     {% form_theme form '@FOSUser/form_layout.html.twig' %}
 
     {{ form_start(form, { 'attr': { 'class': 'cendo' } }) }}

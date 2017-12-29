@@ -8,8 +8,10 @@ imports:
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     locale: ru
-    cover_directory: '%kernel.project_dir%/web/uploads/cover'
-    book_directory: '%kernel.project_dir%/web/uploads/book'
+    cover_directory: '%kernel.project_dir%/web/uploads/cover/'
+    book_directory: '%kernel.project_dir%/web/uploads/book/'
+    cover_directory_relative: '/uploads/cover/'
+    book_directory_relative: '/uploads/book/'
 
 framework:
     #esi: ~

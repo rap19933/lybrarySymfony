@@ -33,3 +33,15 @@ services:
     # AppBundle\Service\ExampleService:
     #     arguments:
     #         $someArgument: 'some_value'
+
+    #twig extensions
+    lybrary.twig.twig_extension:
+            class: LybraryBundle\Twig\LybraryExtension
+            tags:
+                - { name: twig.extension }
+
+    lybrary.listener:
+        class: LybraryBundle\EventListener\LybrarySubscriber
+        tags:
+            - { name: doctrine.event_subscriber, connection: default }
+        arguments:  ['%cover_directory%', '%book_directory%']

@@ -9,26 +9,29 @@
                         <!-- Nav tabs -->
                         <div class="shop-all-tab">
                             <div class="re-shop">
+
                                 <div class="sort-by">
                                     <div class="shop6">
-                                        <label>Sort By :</label>
-                                        <select>
-                                            <option value="">Default sorting</option>
-                                            <option value="">Sort by popularity</option>
-                                            <option value="">Sort by average rating</option>
-                                            <option value="">Sort by newness</option>
-                                            <option value="">Sort by price: low to high</option>
+                                        <label>Показывать :</label>
+                                        <select id="cd-dropdown" onchange="top.location=this.value">
+                                            <option value="{{ path('book_index') }}{% if countShow  %}?countShow={{ countShow }}{% endif %}">Все</option>
+                                            {% if app.user %}
+                                                <option value="{{ path('book_index') }}?myShow=1{% if countShow  %}&countShow={{ countShow }}{% endif %}" {% if myShow == 1 %}selected{% endif %}>Мои</option>
+                                            {% endif %}
                                         </select>
                                     </div>
                                 </div>
+
                                 <div class="shop5">
-                                    <label>Show :</label>
-                                    <select>
-                                        <option value="">12</option>
-                                        <option value="">24</option>
-                                        <option value="">36</option>
+                                    <label>Количество  :</label>
+                                    <select id="cd-dropdown" onchange="top.location=this.value">
+                                        <option value="{{ path('book_index') }}{% if myShow  %}?myShow=1{% endif %}">...</option>
+                                        <option value="{{ path('book_index') }}?countShow=1{% if myShow  %}&myShow=1{% endif %}" {% if countShow == 1 %}selected{% endif %}>4</option>
+                                        <option value="{{ path('book_index') }}?countShow=2{% if myShow  %}&myShow=1{% endif %}" {% if countShow == 2 %}selected{% endif %}>8</option>
+                                        <option value="{{ path('book_index') }}?countShow=3{% if myShow  %}&myShow=1{% endif %}" {% if countShow == 3 %}selected{% endif %}>12</option>
                                     </select>
                                 </div>
+
                             </div>
                         </div>
                         <!-- Tab panes -->
@@ -46,7 +49,9 @@
                                                     {% endif %}
                                                 {% endif %}
                                                 {% if book.cover %}
-                                                    <img class="secondary-image" alt="Product Title" src="{{ asset('uploads/cover/' ~book.cover) }}">
+                                                    <img class="secondary-image" alt="Product Title" src="{{ asset(cover_directory_relative ~book.cover) }}" {{ show_img() }}>
+                                                {% else %}
+                                                    <img class="secondary-image" alt="Product Title" src="{{ asset('uploads/nocover.jpg') }}">
                                                 {% endif %}
                                             </div>
                                             <div class="product-dsc">
@@ -55,7 +60,7 @@
                                                     <span class="price-left">{{ book.author }}</span>
                                                     <span class="star-right">
                                                     {% if book.allowDownload and book.bookFile %}
-                                                        <a href="{{ asset('uploads/book/' ~book.bookFile) }}" target="_blank" download=""><i class="fa fa-cloud-download"></i> Скачать</a>
+                                                        <a href="{{ asset(book_directory_relative ~book.bookFile) }}" target="_blank" download=""><i class="fa fa-cloud-download"></i> Скачать</a>
                                                     {% endif %}
                                                     </span>
                                                 </div>
@@ -98,7 +103,7 @@
         </div>
     </section>
 
-    <table>
+{#    <table>
         <thead>
             <tr>
                 <th>Id</th>
@@ -117,10 +122,10 @@
                 <td><a href="{{ path('book_show', { 'id': book.id }) }}">{{ book.id }}</a></td>
                 <td>{{ book.name }}</td>
                 <td>{{ book.author }}</td>
-                {#<td>{{ book.cover }}</td>#}
-              {#  {% if book.cover %}
+              <td>{{ book.cover }}</td>
+             {% if book.cover %}
                     <td><img src="{{ asset('uploads/cover/' ~book.cover) }}"  alt="" /></td>
-                {% endif %}#}
+                {% endif %}
                 <td>{{ book.bookFile }}</td>
                 <td>{% if book.dateRead %}{{ book.dateRead|date('Y-m-d H:i:s') }}{% endif %}</td>
                 <td>{% if book.allowDownload %}Yes{% else %}No{% endif %}</td>
@@ -143,5 +148,5 @@
         <li>
             <a href="{{ path('book_new') }}">Create a new book</a>
         </li>
-    </ul>
+    </ul>#}
 {% endblock %}

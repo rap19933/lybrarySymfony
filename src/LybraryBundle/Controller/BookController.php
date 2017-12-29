@@ -5,7 +5,11 @@ namespace LybraryBundle\Controller;
 use LybraryBundle\Entity\Book;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use LybraryBundle\ClassForFiles;
 
+
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 /**
  * Book controller.
  *
@@ -16,14 +20,31 @@ class BookController extends Controller
      * Lists all book entities.
      *
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
+        if (preg_match('#^[0-9]+$#', $request->query->get("countShow"))){
+            $countShow = $request->query->get("countShow");
+        } else {
+            $countShow =  null;
+        }
 
-        $books = $em->getRepository('LybraryBundle:Book')->findAll();
+        if($request->query->get("myShow") == 1){
+            $filter = array("user" => $this->getUser()->getId());
+            $myShow = 1;
+        } else {
+            $filter = array();
+            $myShow = 0;
+        }
+
+        $em = $this->getDoctrine()->getManager();
+        $books = $em->getRepository('LybraryBundle:Book')->findBy($filter,array("dateRead" => "DESC"), $countShow);
 
         return $this->render('book/index.html.twig', array(
             'books' => $books,
+            'countShow' => $countShow,
+            'myShow' => $myShow,
+            'cover_directory_relative' => $this->getParameter('cover_directory_relative'),
+            "book_directory_relative" => $this->getParameter('book_directory_relative'),
         ));
     }
 
@@ -48,21 +69,13 @@ class BookController extends Controller
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $file = $book->getCover();
-            $fileName = md5(uniqid()).'.'.$file->guessExtension();
-            $file->move(
-                $this->getParameter('cover_directory'),
-                $fileName
-            );
-            $book->setCover($fileName);
-
-            $file = $book->getBookFile();
-            $fileName = md5(uniqid()).'.'.$file->guessExtension();
-            $file->move(
-                $this->getParameter('book_directory'),
-                $fileName
-            );
-            $book->setBookFile($fileName);
+            if (!$book->getBookFile()) {
+                return $this->render('book/new.html.twig', array(
+                    'book' => $book,
+                    'form' => $form->createView(),
+                    'error' => 'error'
+                ));
+            }
 
             $book->setUser($this->getUser());
 
@@ -78,6 +91,7 @@ class BookController extends Controller
         return $this->render('book/new.html.twig', array(
             'book' => $book,
             'form' => $form->createView(),
+            'error' => ''
         ));
     }
 
@@ -101,11 +115,23 @@ class BookController extends Controller
      */
     public function editAction(Request $request, Book $book)
     {
+
+        if(!$this->getUser() || $this->getUser()->getId() !== $book->getUser()->getId())
+        {
+            return $this->render('FOSUserBundle:Security:login.html.twig',
+                array('last_username' => '',
+                      'error' => '',
+                      'csrf_token' => '')
+            );
+        }
+
         $deleteForm = $this->createDeleteForm($book);
         $editForm = $this->createForm('LybraryBundle\Form\BookType', $book);
+
         $editForm->handleRequest($request);
 
         if ($editForm->isSubmitted() && $editForm->isValid()) {
+
             $this->getDoctrine()->getManager()->flush();
 
             return $this->redirectToRoute('book_edit', array('id' => $book->getId()));
@@ -132,7 +158,6 @@ class BookController extends Controller
             $em->remove($book);
             $em->flush();
         }
-
         return $this->redirectToRoute('book_index');
     }
 

@@ -11,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Validator\Constraints\File;
+
 class BookType extends AbstractType
 {
     /**
@@ -40,7 +41,8 @@ class BookType extends AbstractType
                       'constraints' => array(
                           new File(array(
                               'maxSize' => '5M',
-                              'maxSizeMessage' => 'Слишком большой файл (max: 5Мб)',
+                              'maxSizeMessage' => 'Выбирете файл менее 5 Мб',
+                              'notFoundMessage' => 'выбирете файл',
                           ))
                       )
             ))

@@ -3,8 +3,26 @@
 
 {% block file_widget %}
 <div class="col-md-10">
-    {% set type = type|default('file') %}
+    {% if data and name == "cover" %}
+        <div class="buttons" >
+        <div class="">
+
+            <input id="delete_img" formaction="{{ path('book_edit', { 'id': form.parent.vars.value.id }) }}?img=y" class="btn btn-primary" type="submit" value="Удалить картинку" style="width: 40%; margin-bottom: 20px">
+        </div>
+        </div>
+        <div class="pull-right">
+           {# <div class="file_upload">
+                <button type="button" class="btn btn-primary">Выбрать</button>
+                <div>Изменить обложку</div>#}
+                <input type="{{ type }}" {{ block('widget_attributes') }} class="btn btn-primary" style="width: 100%; margin-bottom: 20px"/>
+ {#           </div>
+
+        </div>#}
+
+    {% else %}
+        {% set type = type|default('file') %}
         <input type="{{ type }}" {{ block('widget_attributes') }} class="btn btn-primary" style="width: 100%; margin-bottom: 20px"/>
+    {% endif %}
 </div>
 {% endblock file_widget %}
 
@@ -19,6 +37,7 @@
 
 {% block form_label -%}
     {%- set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' col-md-2 control-label')|trim}) -%}
+    {#{{ dump(parent()) }}#}
     {{- parent() -}}
 {%- endblock form_label %}
 
@@ -31,13 +50,13 @@
 {%- endblock form_row %}
 
 {%- block checkbox_widget -%}
-<div class="col-md-10">
-    <div class="forgot-password1">
-        <label class="inline2" for="remember_me">
-            <input type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />
-        </label>
+    <div class="col-md-10">
+        <div class="forgot-password1">
+            <label class="inline2" for="remember_me">
+                <input type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />
+            </label>
+        </div>
     </div>
-</div>
 {%- endblock checkbox_widget -%}
 
 {% block form_errors -%}
