@@ -1,8 +1,9 @@
 {% extends 'layout.html.twig' %}
+{% block title %}Создание книги{% endblock %}
 
 {% block contentBook %}
 
-    <h1>Book creation</h1>
+    <h1>Создание книги</h1>
 
     {% if error %}
         <p style="color: red">Поле "Файл книги" обязательна для заполнения!!!</p>
@@ -13,14 +14,14 @@
     {{ form_start(form, { 'attr': { 'class': 'cendo' } }) }}
         {{ form_widget(form) }}
 
-    <div class="col-md-12">
-        <div class="buttons">
-            <div class="pull-right">
-                <input type="submit" class="btn btn-primary" value="Создать" />
+        <div class="col-md-12">
+            <div class="buttons">
+                <div class="pull-right">
+                    <input type="submit" class="btn btn-primary" value="Создать" />
+                </div>
             </div>
+            <a class="btn btn-primary pull-left" href="{{ path('book_index') }}">Назад</a>
         </div>
-        <a class="btn btn-primary pull-left" href="{{ path('book_index') }}">Назад</a>
-    </div>
 
     {{ form_end(form) }}
 

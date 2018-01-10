@@ -86,3 +86,4 @@ form:
     new_password_confirmation: 'Подтвердите пароль'
 login: Авторизоватся
 create: Создать новый аккаунт
+back: Назад

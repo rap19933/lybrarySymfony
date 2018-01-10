@@ -3963,7 +3963,7 @@ a.o-back-to:hover {
     border: 1px solid #ebebeb;
 }
 .single-product-area {
-  margin: 90px 0 0;
+  margin: 110px 0 20px;
 }
 .pro-img-tab-slider.indicator-style2.owl-theme:hover .owl-controls .owl-buttons div {
     opacity: 1;
@@ -4112,12 +4112,12 @@ a.o-back-to:hover {
   box-shadow: none;
   color: #b9b9b9;
   float: left;
-  height: 37px;
+  height: 44px;
   line-height: 17px;
   margin-left: 5px;
   padding: 9px 0;
   text-align: center;
-  width: 37px !important;
+  width: 128px !important;
 }
 .product-icon a:hover{
     background: #019cb2 none repeat scroll 0 0 !important;

@@ -4,16 +4,6 @@
 {% if error %}
     <p style="color: red">{{ error.messageKey|trans(error.messageData, 'security') }}</p>
 {% endif %}
-<div class="tb-social-login">
-    <a class="tb-facebook-login" href="#">
-        <i class="fa fa-facebook"></i>
-        Sign In With Facebook
-    </a>
-    <a class="tb-twitter-login res" href="#">
-        <i class="fa fa-twitter"></i>
-        Sign In With Twitter
-    </a>
-</div>
 <form action="{{ path("fos_user_security_check") }}" method="post" class="cendo">
     {% if csrf_token %}
         <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />

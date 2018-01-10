@@ -1,9 +1,12 @@
 {% extends 'base.html.twig' %}
+{% block title %}Просмотр книги{% endblock %}
 
 {% block body %}
+
     <section class="single-product-area sit">
         <div class="container">
             <div class="row">
+                <h1>Просмотр книги</h1>
                 <div class="col-md-12">
                     <div class="row">
                         <div class="col-md-6 col-sm-6 none-si-pro">
@@ -11,7 +14,11 @@
                                 <div class="tab-pane active" id="image-1">
                                     <div class="simpleLens-big-image-container">
                                         <a class="simpleLens-lens-image" data-lightbox="roadtrip" data-lens-image="{{ asset('uploads/cover/' ~book.cover) }}" href="">
-                                            <img src="{{ asset('uploads/cover/' ~book.cover) }}" {{ show_img(553, 700) }} alt="" class="simpleLens-big-image">
+                                        {% if book.cover %}
+                                            <img class="simpleLens-big-image" alt="Product Title" src="{{ asset(cover_directory_relative ~book.cover) }}" {{ show_img(453, 600) }}>
+                                        {% else %}
+                                            <img class="simpleLens-big-image" alt="Product Title" src="{{ asset('uploads/nocover.jpg') }}">
+                                        {% endif %}
                                         </a>
                                     </div>
                                 </div>
@@ -20,52 +27,33 @@
                         <div class="col-md-6 col-sm-6">
                             <div class="cras">
                                 <div class="product-name">
-                                    <h2>{{ book.name }}</h2>
-                                </div>
-                                <div class="pro-rating cendo-pro">
-                                    <div class="pro_one">
-                                        <img src="img/icon-img/stars-1.png" alt="">
-                                    </div>
-                                    {% if book.allowDownload and book.bookFile %}
-                                        <p class="rating-links">
-                                            <a href="{{ asset('uploads/book/' ~book.bookFile) }}" target="_blank" download=""><i class="fa fa-cloud-download"></i> Скачать</a>
-                                        </p>
-
-                                    {% endif %}
-
-                                </div>
-                                <p class="availability in-stock">
-                                    Product Code: Product 3
-                                </p>
-                                <p class="availability in-stock2">
-                                    Availability:In stock
-                                </p>
-                                <div class="short-description">
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam fringilla augue nec est tristique auctor. Donec non est at libero vulputate rutrum. Morbi ornare lectus quis justo gravida semper. Nulla tellus mi, vulputate adipiscing cursus eu, suscipit id nulla. Donec a neque libero. Pellentesque aliquet, sem eget laoreet ultrices, ipsum metus feugiat sem, quis fermentum turpis eros eget velit. Donec ac tempus ante. Fusce ultricies massa massa. Fusce aliquam, purus eget sagittis vulputate, sapien libero hendrerit est, sed commodo augue nisi non neque. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tempor, lorem et placerat vestibulum, metus nisi posuere nisl, in accumsan elit odio...</p>
+                                    <h2>Название книги: {{ book.name }}</h2>
                                 </div>
                                 <div class="pre-box">
-                                    <span class="special-price">$155.00</span>
+                                    <span class="special-price">Автор: {{ book.author }}</span>
                                 </div>
                                 <div class="add-to-box1">
                                     <div class="add-to-box add-to-box2">
                                         <div class="add-to-cart">
                                             <div class="product-icon">
-                                                <a href="{{ path('book_edit', { 'id': book.id }) }}">
-                                                    <i class="fa fa-pencil-square-o"></i>
-                                                </a>
-                                                <a href="#">
-                                                    <i class="fa fa-times"></i>
-                                                </a>
-
-                                                    {{ form_start(delete_form) }}
-                                                {{ form_widget(delete_form) }}
-                                                    <a>
-                                                    <i class="fa fa-low-vision" type="submit" value="Delete"></i><input type="submit" value="Delete">
-                                                    </a>
-                                                   {# <input type="submit" value="Delete">#}
-                                                    {{ form_end(delete_form) }}
-
-
+                                                {% if book.allowDownload and book.bookFile %}
+                                                    <p class="rating-links">
+                                                        <a href="{{ asset('uploads/book/' ~book.bookFile) }}" target="_blank" download=""><i class="fa fa-cloud-download"></i> Скачать</a>
+                                                    </p>
+                                                {% endif %}
+                                                {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                                                    {% if book.user.id == app.user.id %}
+                                                        <a href="{{ path('book_edit', { 'id': book.id }) }}">
+                                                            Изменить<i class="fa fa-pencil-square-o"></i>
+                                                        </a>
+                                                        {{ form_start(delete_form) }}
+                                                            {{ form_widget(delete_form) }}
+                                                                <a>
+                                                                    <i class="fa fa-low-vision" type="submit" value="Delete"></i><input type="submit" value="Delete">
+                                                                </a>
+                                                        {{ form_end(delete_form) }}
+                                                    {% endif %}
+                                                {% endif %}
                                             </div>
                                         </div>
                                     </div>
@@ -77,54 +65,4 @@
             </div>
         </div>
     </section>
-
-
-    <h1>Book</h1>
-
-    <table>
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ book.id }}</td>
-            </tr>
-            <tr>
-                <th>Name</th>
-                <td>{{ book.name }}</td>
-            </tr>
-            <tr>
-                <th>Author</th>
-                <td>{{ book.author }}</td>
-            </tr>
-            <tr>
-                <th>Cover</th>
-                <td>{{ book.cover }}</td>
-            </tr>
-            <tr>
-                <th>Bookfile</th>
-                <td>{{ book.bookFile }}</td>
-            </tr>
-            <tr>
-                <th>Dateread</th>
-                <td>{% if book.dateRead %}{{ book.dateRead|date('Y-m-d H:i:s') }}{% endif %}</td>
-            </tr>
-            <tr>
-                <th>Allowdownload</th>
-                <td>{% if book.allowDownload %}Yes{% else %}No{% endif %}</td>
-            </tr>
-        </tbody>
-    </table>
-
-    <ul>
-        <li>
-            <a href="{{ path('book_index') }}">Back to the list</a>
-        </li>
-        <li>
-            <a href="{{ path('book_edit', { 'id': book.id }) }}">Edit</a>
-        </li>
-        <li>
-            {{ form_start(delete_form) }}
-                <input type="submit" value="Delete">
-            {{ form_end(delete_form) }}
-        </li>
-    </ul>
 {% endblock %}

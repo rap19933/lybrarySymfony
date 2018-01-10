@@ -5,23 +5,29 @@ namespace LybraryBundle\Controller;
 use LybraryBundle\Entity\Book;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-use LybraryBundle\ClassForFiles;
+use Symfony\Component\Cache\Simple\FilesystemCache;
+use JMS\Serializer\Expression\ExpressionEvaluator;
+use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
-
-use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 /**
  * Book controller.
  *
  */
 class BookController extends Controller
 {
+    private $cache;
+    public function __construct()
+    {
+        $this->cache = new FilesystemCache();
+    }
     /**
      * Lists all book entities.
      *
      */
+
     public function indexAction(Request $request)
     {
+        dump($request);
         if (preg_match('#^[0-9]+$#', $request->query->get("countShow"))){
             $countShow = $request->query->get("countShow");
         } else {
@@ -36,8 +42,26 @@ class BookController extends Controller
             $myShow = 0;
         }
 
-        $em = $this->getDoctrine()->getManager();
-        $books = $em->getRepository('LybraryBundle:Book')->findBy($filter,array("dateRead" => "DESC"), $countShow);
+        if ($myShow || $countShow) {
+            $repository = $this->getDoctrine()->getManager();
+            $books = $repository->getRepository('LybraryBundle:Book')->findBy($filter,array("dateRead" => "DESC"), $countShow);
+        } else {
+            $serializer = \JMS\Serializer\SerializerBuilder::create()
+                ->setExpressionEvaluator(new ExpressionEvaluator(new ExpressionLanguage()))
+                ->build();
+
+            if (!$this->cache->has($this->getParameter('cache_books'))) {
+                $repository = $this->getDoctrine()->getManager();
+                $books = $repository->getRepository('LybraryBundle:Book')->findBy($filter,array("dateRead" => "DESC"), $countShow);
+
+                $jsonContent = $serializer->serialize($books, 'xml');
+                $this->cache->set($this->getParameter('cache_books'), $jsonContent, $this->getParameter('cache_ttl'));
+
+            } else {
+
+                $books = $serializer->deserialize($this->cache->get($this->getParameter('cache_books')), 'array<LybraryBundle\Entity\Book>', 'xml');
+            }
+        }
 
         return $this->render('book/index.html.twig', array(
             'books' => $books,
@@ -84,7 +108,7 @@ class BookController extends Controller
             $em = $this->getDoctrine()->getManager();
             $em->persist($book);
             $em->flush();
-
+            $this->deleteCache();
             return $this->redirectToRoute('book_show', array('id' => $book->getId()));
         }
 
@@ -103,7 +127,15 @@ class BookController extends Controller
     {
         $deleteForm = $this->createDeleteForm($book);
 
+        $book->setDateRead(date_create(date("Y-m-d H:i:s")));
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($book);
+        $em->flush();
+        $this->deleteCache();
+
         return $this->render('book/show.html.twig', array(
+            'cover_directory_relative' => $this->getParameter('cover_directory_relative'),
             'book' => $book,
             'delete_form' => $deleteForm->createView(),
         ));
@@ -133,7 +165,7 @@ class BookController extends Controller
         if ($editForm->isSubmitted() && $editForm->isValid()) {
 
             $this->getDoctrine()->getManager()->flush();
-
+            $this->deleteCache();
             return $this->redirectToRoute('book_edit', array('id' => $book->getId()));
         }
 
@@ -157,6 +189,7 @@ class BookController extends Controller
             $em = $this->getDoctrine()->getManager();
             $em->remove($book);
             $em->flush();
+            $this->deleteCache();
         }
         return $this->redirectToRoute('book_index');
     }
@@ -175,5 +208,9 @@ class BookController extends Controller
             ->setMethod('DELETE')
             ->getForm()
         ;
+    }
+    public function deleteCache()
+    {
+        $this->cache->delete($this->getParameter('cache_books'));
     }
 }

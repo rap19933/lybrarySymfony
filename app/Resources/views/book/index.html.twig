@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% block title %}Главная{% endblock %}
 
 {% block body %}
     <section class="pages products-page section-padding-top">
@@ -23,12 +24,12 @@
                                 </div>
 
                                 <div class="shop5">
-                                    <label>Количество  :</label>
+                                    <label>Количество :</label>
                                     <select id="cd-dropdown" onchange="top.location=this.value">
                                         <option value="{{ path('book_index') }}{% if myShow  %}?myShow=1{% endif %}">...</option>
-                                        <option value="{{ path('book_index') }}?countShow=1{% if myShow  %}&myShow=1{% endif %}" {% if countShow == 1 %}selected{% endif %}>4</option>
-                                        <option value="{{ path('book_index') }}?countShow=2{% if myShow  %}&myShow=1{% endif %}" {% if countShow == 2 %}selected{% endif %}>8</option>
-                                        <option value="{{ path('book_index') }}?countShow=3{% if myShow  %}&myShow=1{% endif %}" {% if countShow == 3 %}selected{% endif %}>12</option>
+                                        <option value="{{ path('book_index') }}?countShow=1{% if myShow  %}&myShow=1{% endif %}" {% if countShow == 1 %}selected{% endif %}>1</option>
+                                        <option value="{{ path('book_index') }}?countShow=2{% if myShow  %}&myShow=1{% endif %}" {% if countShow == 2 %}selected{% endif %}>2</option>
+                                        <option value="{{ path('book_index') }}?countShow=3{% if myShow  %}&myShow=1{% endif %}" {% if countShow == 3 %}selected{% endif %}>3</option>
                                     </select>
                                 </div>
 
@@ -40,6 +41,7 @@
                                 {% for book in books %}
                                     <div class="col-md-3 col-lg-3 col-sm-6">
                                         <div class="single-product">
+
                                             <div class="product-img">
                                                 {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
                                                     {% if book.user.id == app.user.id %}
@@ -54,10 +56,11 @@
                                                     <img class="secondary-image" alt="Product Title" src="{{ asset('uploads/nocover.jpg') }}">
                                                 {% endif %}
                                             </div>
+
                                             <div class="product-dsc">
-                                                <h3><a href="{{ path('book_show', { 'id': book.id }) }}">{{ book.name }}</a></h3>
+                                                <h3><a href="{{ path('book_show', { 'id': book.id }) }}">Название: {{ book.name }}</a></h3>
                                                 <div class="star-price">
-                                                    <span class="price-left">{{ book.author }}</span>
+                                                    <span class="price-left">Автор: {{ book.author }}</span>
                                                     <span class="star-right">
                                                     {% if book.allowDownload and book.bookFile %}
                                                         <a href="{{ asset(book_directory_relative ~book.bookFile) }}" target="_blank" download=""><i class="fa fa-cloud-download"></i> Скачать</a>
@@ -65,88 +68,28 @@
                                                     </span>
                                                 </div>
                                             </div>
+
                                             <div class="actions-btn">
-                                                <a href="{{ path('book_show', { 'id': book.id }) }}" {#data-placement="top" data-target="#quick-view" data-trigger="hover" data-toggle="modal"#} data-original-title="Посмотреть"><i class="fa fa-eye"></i></a>
+                                                <a href="{{ path('book_show', { 'id': book.id }) }}" data-original-title="Посмотреть"><i class="fa fa-eye"></i></a>
                                                 {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
                                                     {% if book.user.id == app.user.id %}
-                                                        <a data-placement="top" data-toggle="tooltip" href="{{ path('book_edit', { 'id': book.id }) }}" data-original-title="Редактировать"><i class="fa fa-heart"></i></a>
+                                                        <a data-placement="top" data-toggle="tooltip" href="{{ path('book_edit', { 'id': book.id }) }}" data-original-title="Редактировать">
+                                                            <i class="fa fa-pencil-square-o"></i><
+                                                            /a>
                                                     {% endif %}
                                                 {% endif %}
-
-                                                <a title="" data-placement="top" data-toggle="tooltip" href="#" data-original-title="Удалить"><i class="fa fa-retweet"></i></a>
-                                                <a href="#" data-toggle="tooltip" data-placement="top" title="" data-original-title="Add To Cart"><i class="fa fa-shopping-cart"></i></a>
+                                                {% if book.allowDownload and book.bookFile %}
+                                                    <a href="{{ asset(book_directory_relative ~book.bookFile) }}" target="_blank" download=""><i class="fa fa-cloud-download"></i> Скачать</a>
+                                                {% endif %}
                                             </div>
                                         </div>
                                     </div>
                                 {% endfor %}
                              </div>
                         </div>
-                        <div class="shop-all-tab-cr shop-bottom">
-                            <div class="two-part">
-                                <div class="shop5 page">
-                                    <ul>
-                                        <li>
-                                            <a class="active" href="#">1</a>
-                                            <a href="#">2</a>
-                                            <a href="#">3</a>
-                                            <a href="#">4</a>
-                                            <a href="#">5</a>
-                                            <a href="#"><i class="fa fa-arrow-right"></i></a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
-
-{#    <table>
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Author</th>
-                <th>Cover</th>
-                <th>Bookfile</th>
-                <th>Dateread</th>
-                <th>Allowdownload</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for book in books %}
-            <tr>
-                <td><a href="{{ path('book_show', { 'id': book.id }) }}">{{ book.id }}</a></td>
-                <td>{{ book.name }}</td>
-                <td>{{ book.author }}</td>
-              <td>{{ book.cover }}</td>
-             {% if book.cover %}
-                    <td><img src="{{ asset('uploads/cover/' ~book.cover) }}"  alt="" /></td>
-                {% endif %}
-                <td>{{ book.bookFile }}</td>
-                <td>{% if book.dateRead %}{{ book.dateRead|date('Y-m-d H:i:s') }}{% endif %}</td>
-                <td>{% if book.allowDownload %}Yes{% else %}No{% endif %}</td>
-                <td>
-                    <ul>
-                        <li>
-                            <a href="{{ path('book_show', { 'id': book.id }) }}">show</a>
-                        </li>
-                        <li>
-                            <a href="{{ path('book_edit', { 'id': book.id }) }}">edit</a>
-                        </li>
-                    </ul>
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    <ul>
-        <li>
-            <a href="{{ path('book_new') }}">Create a new book</a>
-        </li>
-    </ul>#}
 {% endblock %}

@@ -3,7 +3,7 @@
 namespace LybraryBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-
+use JMS\Serializer\Annotation as JMS;
 /**
  * Book
  *
@@ -18,6 +18,7 @@ class Book
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @JMS\Type("integer")
      */
     private $id;
 
@@ -25,6 +26,7 @@ class Book
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
+     * @JMS\Type("string")
      */
     private $name;
 
@@ -32,6 +34,7 @@ class Book
      * @var string
      *
      * @ORM\Column(name="author", type="string", length=255)
+     * @JMS\Type("string")
      */
     private $author;
 
@@ -39,6 +42,7 @@ class Book
      * @var string
      *
      * @ORM\Column(name="cover", type="string", length=255, nullable=true, unique=true)
+     * @JMS\Type("string")
      */
     private $cover;
 
@@ -46,6 +50,7 @@ class Book
      * @var string
      *
      * @ORM\Column(name="book_file", type="string", length=255, unique=true)
+     * @JMS\Type("string")
      */
     private $bookFile;
 
@@ -53,6 +58,7 @@ class Book
      * @var \DateTime
      *
      * @ORM\Column(name="date_read", type="datetime", nullable=true)
+     * @JMS\Type("datetime")
      */
     private $dateRead;
 
@@ -60,11 +66,13 @@ class Book
      * @var bool
      *
      * @ORM\Column(name="allow_download", type="boolean", nullable=true)
+     * @JMS\Type("boolean")
      */
     private $allowDownload;
 
     /**
      * @ORM\ManyToOne(targetEntity="LybraryBundle\Entity\User", inversedBy="book")
+     * @JMS\Type("LybraryBundle\Entity\User")
      */
     private $user;
 

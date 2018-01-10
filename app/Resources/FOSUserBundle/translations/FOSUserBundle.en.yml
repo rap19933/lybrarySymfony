@@ -92,3 +92,4 @@ form:
     new_password_confirmation: 'Repeat new password'
 login: Login
 create: Create a new account
+back: Back

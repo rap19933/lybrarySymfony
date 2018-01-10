@@ -1,6 +1,5 @@
 {% trans_default_domain 'FOSUserBundle' %}
 
-
 <h5 class="tb-title">{{ 'create'|trans }}</h5>
 {% form_theme form '@FOSUser/form_layout.html.twig' %}
 
@@ -12,10 +11,6 @@
                 <input type="submit" class="btn btn-primary" value="{{ 'registration.submit'|trans }}" />
             </div>
         </div>
-        <a class="btn btn-primary pull-left" href="{{ path(app.request.get('_route')) }}">Same page</a>
+        <a class="btn btn-primary pull-left" href="{{ path('homepage') }}">{{ 'back'|trans }}</a>
     </div>
 {{ form_end( form ) }}
-
-
-
-

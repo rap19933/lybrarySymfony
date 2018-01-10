@@ -1,13 +1,12 @@
 <!DOCTYPE html>
-<html class="no-js" lang="">
+<html class="no-js" lang="{{ app.request.getLocale() }}">
 <head>
     <meta charset="UTF-8" />
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>{% block title %}Welcome!{% endblock %}</title>
-    {% block stylesheets %}{% endblock %}
+    <title>{% block title %}{% endblock %}</title>
 
     <!-- favicon
     ============================================ -->
@@ -28,21 +27,11 @@
     <link rel="stylesheet" href="{{ asset('css/img-zoom/jquery.simpleLens.css') }}">
     <!-- meanmenu css -->
     <link rel="stylesheet" href="{{ asset('css/meanmenu.min.css') }}">
-    <!-- nivo slider CSS
-    ============================================ -->
-    <link rel="stylesheet" href="{{ asset('lib/css/nivo-slider.css') }}" type="text/css" />
-    <link rel="stylesheet" href="{{ asset('lib/css/preview.css') }}" type="text/css" media="screen" />
-    <!-- owl.carousel css -->
-    <link rel="stylesheet" href="{{ asset('css/owl.carousel.css') }}">
     <!-- font-awesome css -->
     <link rel="stylesheet" href="{{ asset('css/font-awesome.min.css') }}">
     <!-- style css -->
     <link rel="stylesheet" href="{{ asset('style.css') }}">
-    <!-- responsive css -->
-    <link rel="stylesheet" href="{{ asset('css/responsive.css') }}">
-    <!-- modernizr css -->
-    <script src="{{ asset('js/vendor/modernizr-2.8.3.min.js') }}"></script>
-{#//////////////////////////#}
+
     <script src="http://code.jquery.com/jquery-latest.js"></script>
 </head>
 <body>
@@ -53,7 +42,7 @@
             <div class="row">
                 <div class="col-sm-2 col-md-2 col-xs-4">
                     <div class="logo">
-                        <a href="{{ path('homepage') }}"><img src="{{ asset('img/logo.png') }}" alt="" /></a>
+                        <a href="{{ path('homepage') }}"><img src="{{ asset('img/logoobbp.png') }}" alt="" style="width: 75%"/></a>
                     </div>
                 </div>
                 <div class="col-sm-10 col-md-10 col-xs-8 static">
@@ -88,12 +77,6 @@
                         <!-- mobile menu end -->
                         <div class="right-header re-right-header">
                             <ul>
-                                <li class="re-icon tnm"><i class="fa fa-search" aria-hidden="true"></i>
-                                    <form method="get" id="searchform" action="#">
-                                        <input type="text" value="" name="s" id="ws" placeholder="Search product..." />
-                                        <button type="submit"><i class="pe-7s-search"></i></button>
-                                    </form>
-                                </li>
                                 {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
                                     <li>
                                         <a href="{{ path('fos_user_profile_show') }}">
@@ -136,45 +119,12 @@
 
 <!-- footer section start -->
 <footer class="re-footer-section">
-    <!-- footer-top area start -->
-    <div class="footer-top section-padding-top">
-        <div class="social-media">
-            <div class="container">
-                <div class="row">
-                    <div class="col-xs-12 col-sm-6">
-                        <div class="paypal social-icon">
-                            <ul>
-                                <li><a href="#"><i class="fa fa-cc-visa"></i></a></li>
-                                <li><a href="#"><i class="fa fa-cc-mastercard"></i></a></li>
-                                <li><a href="#"><i class="fa fa-cc-paypal"></i></a></li>
-                                <li><a href="#"><i class="fa fa-cc-discover"></i></a></li>
-                                <li><a href="#"><i class="fa fa-cc-stripe"></i></a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-6">
-                        <div class="social-icon">
-                            <ul class="floatright">
-                                <li class="res-mar"><a href="#"><i class="fa fa-facebook"></i></a></li>
-                                <li><a href="#"><i class="fa fa-twitter"></i></a></li>
-                                <li><a href="#"><i class="fa fa-google-plus"></i></a></li>
-                                <li><a href="#"><i class="fa fa-linkedin"></i></a></li>
-                                <li><a href="#"><i class="fa fa-instagram"></i></a></li>
-                                <li><a href="#"><i class="fa fa-soundcloud"></i></a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- footer-top area end -->
     <!-- footer-bottom area start -->
     <div class="footer-bottom">
         <div class="container">
             <div class="row">
                 <div class="col-xs-12 text-center">
-                    <p>&copy; 2016 Devitems. All Rights Reserved.</p>
+                    <p>&copy; 2018 Devitems. All Rights Reserved.</p>
                 </div>
             </div>
         </div>

@@ -1,10 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: ser
- * Date: 12.12.17
- * Time: 15:21
- */
+
 namespace LybraryBundle\EventListener;
 
 use Doctrine\Common\EventSubscriber;
@@ -27,6 +22,7 @@ class LybrarySubscriber implements EventSubscriber
     public function getSubscribedEvents()
     {
         return array(
+            'index',
             'preRemove',
             'prePersist',
             'preUpdate',
@@ -56,7 +52,6 @@ class LybrarySubscriber implements EventSubscriber
                     $this->coverDirectory,
                     $fileName
                 );
-
                 $entity->setCover($fileName);
             }
 
@@ -77,58 +72,47 @@ class LybrarySubscriber implements EventSubscriber
         if($entity instanceof Book) {
 
             $changes = $args->getEntityChangeSet();
-            dump($changes["cover"]);
-            dump($request->query->get("img"));
-            if(!empty($changes["cover"])) {
-                //удалить обложку
-                if(!empty($request->query->get("img"))) {
-                    ClassForFiles::RemoveFile($this->coverDirectory.$changes["cover"][0],false);
-                    $entity->setCover(null);
-                }
-                // не обновлять обложку
-                elseif(!$changes["cover"][1]) {
-                    $entity->setCover($changes["cover"][0]);
-                }
-                //добавить обложку
-                else {
-                    // обновить обложку
-                    if(!empty($changes["cover"][0])) {
+            if (empty($changes["dateRead"][1])){
+                if(!empty($changes["cover"])) {
+                    //удалить обложку
+                    if(!empty($request->query->get("img"))) {
                         ClassForFiles::RemoveFile($this->coverDirectory.$changes["cover"][0],false);
+                        $entity->setCover(null);
                     }
+                    // не обновлять обложку
+                    elseif(!$changes["cover"][1]) {
+                        $entity->setCover($changes["cover"][0]);
+                    }
+                    //добавить обложку
+                    else {
+                        // обновить обложку
+                        if(!empty($changes["cover"][0])) {
+                            ClassForFiles::RemoveFile($this->coverDirectory.$changes["cover"][0],false);
+                        }
 
-                    $file = $entity->getCover();
+                        $file = $entity->getCover();
+                        $fileName = md5(uniqid()).'.'.$file->guessExtension();
+                        $file->move(
+                            $this->coverDirectory,
+                            $fileName
+                        );
+                        $entity->setCover($fileName);
+                    }
+                }
+
+                if (empty($changes["bookFile"][1])) {
+                    $entity->setBookFile($changes["bookFile"][0]);
+                } else {
+                    ClassForFiles::RemoveFile(false,$this->bookDirectory.$changes["bookFile"][0]);
+                    $file = $entity->getBookFile();
                     $fileName = md5(uniqid()).'.'.$file->guessExtension();
                     $file->move(
-                        $this->coverDirectory,
+                        $this->bookDirectory,
                         $fileName
                     );
-                    $entity->setCover($fileName);
+                    $entity->setBookFile($fileName);
                 }
-            }
-
-            if (!$changes["bookFile"][1]) {
-                $entity->setBookFile($changes["bookFile"][0]);
-            } else {
-                ClassForFiles::RemoveFile(false,$this->bookDirectory.$changes["bookFile"][0]);
-                $file = $entity->getBookFile();
-                $fileName = md5(uniqid()).'.'.$file->guessExtension();
-                $file->move(
-                    $this->bookDirectory,
-                    $fileName
-                );
-                $entity->setBookFile($fileName);
             }
         }
     }
-/*
-    public function index(LifecycleEventArgs $args)
-    {
-        $entity = $args->getEntity();
-
-        // perhaps you only want to act on some "Product" entity
-        if ($entity instanceof Product) {
-            $entityManager = $args->getEntityManager();
-            // ... do something with the Product
-        }
-    }*/
 }

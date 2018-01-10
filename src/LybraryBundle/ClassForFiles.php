@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: ser
- * Date: 12.12.17
- * Time: 16:35
- */
 
 namespace LybraryBundle;
 
@@ -20,19 +14,4 @@ class ClassForFiles
         if ($book)
         $fs->remove($book);
     }
-
-
-
-    public static function RenameFile($file, $directory)
-    {
-        /*if ($file) {
-            $fileName = md5(uniqid()).'.'.$file->guessExtension();
-            $file->move(
-                $directory,
-                $fileName
-            );
-            return $fileName;
-        }*/
-    }
-
 }

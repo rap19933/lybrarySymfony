@@ -1,35 +1,9 @@
-{#{% extends 'base.html.twig' %}
-
-{% block body %}
-    <h1>Book edit</h1>
-
-    {{ form_start(edit_form) }}
-        {{ form_widget(edit_form) }}
-        <input type="submit" value="Edit" />
-    {{ form_end(edit_form) }}
-
-    <ul>
-        <li>
-            <a href="{{ path('book_index') }}">Back to the list</a>
-        </li>
-        <li>
-            {{ form_start(delete_form) }}
-                <input type="submit" value="Delete">
-            {{ form_end(delete_form) }}
-        </li>
-    </ul>
-{% endblock %}#}
-
 {% extends 'layout.html.twig' %}
+{% block title %}Редактирование книги{% endblock %}
 
 {% block contentBook %}
 
-    <h1>Book edit</h1>
-{#{{ dump(edit_form) }}#}
-    {#{% if error %}
-        <p style="color: red">Поле "Файл книги" обязательна для заполнения!!!</p>
-    {% endif %}#}
-
+    <h1>Редактирование книги</h1>
     {% form_theme edit_form '@FOSUser/form_layout.html.twig' %}
 
     {{ form_start(edit_form, { 'attr': { 'class': 'cendo' } }) }}
