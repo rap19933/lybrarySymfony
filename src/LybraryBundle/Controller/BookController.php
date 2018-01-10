@@ -27,7 +27,6 @@ class BookController extends Controller
 
     public function indexAction(Request $request)
     {
-        dump($request);
         if (preg_match('#^[0-9]+$#', $request->query->get("countShow"))){
             $countShow = $request->query->get("countShow");
         } else {
@@ -78,6 +77,8 @@ class BookController extends Controller
      */
     public function newAction(Request $request)
     {
+        $apiKey = md5($this->getParameter('apiKey'));
+
         if(!$this->getUser())
         {
             return $this->render('FOSUserBundle:Security:login.html.twig',
@@ -93,11 +94,16 @@ class BookController extends Controller
 
         if ($form->isSubmitted() && $form->isValid()) {
 
+            if ($request->request->get("apiKey") != $apiKey) {
+                return $this->render('book/error.html.twig');
+            };
+
             if (!$book->getBookFile()) {
                 return $this->render('book/new.html.twig', array(
                     'book' => $book,
                     'form' => $form->createView(),
-                    'error' => 'error'
+                    'error' => 'error',
+                    'apiKey' => $apiKey
                 ));
             }
 
@@ -115,7 +121,8 @@ class BookController extends Controller
         return $this->render('book/new.html.twig', array(
             'book' => $book,
             'form' => $form->createView(),
-            'error' => ''
+            'error' => '',
+            'apiKey' => $apiKey
         ));
     }
 
@@ -212,5 +219,10 @@ class BookController extends Controller
     public function deleteCache()
     {
         $this->cache->delete($this->getParameter('cache_books'));
+    }
+
+    public function errorAction()
+    {
+        return $this->render('book/error.html.twig');
     }
 }

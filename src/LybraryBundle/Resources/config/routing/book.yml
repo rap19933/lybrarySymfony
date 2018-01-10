@@ -22,3 +22,8 @@ book_delete:
     path:     /{id}/delete
     defaults: { _controller: "LybraryBundle:Book:delete" }
     methods:  DELETE
+
+book_error:
+    path:     /error
+    defaults: { _controller: "LybraryBundle:Book:error" }
+    methods:  GET

@@ -61,25 +61,23 @@
                                                 <h3><a href="{{ path('book_show', { 'id': book.id }) }}">Название: {{ book.name }}</a></h3>
                                                 <div class="star-price">
                                                     <span class="price-left">Автор: {{ book.author }}</span>
-                                                    <span class="star-right">
-                                                    {% if book.allowDownload and book.bookFile %}
-                                                        <a href="{{ asset(book_directory_relative ~book.bookFile) }}" target="_blank" download=""><i class="fa fa-cloud-download"></i> Скачать</a>
-                                                    {% endif %}
-                                                    </span>
                                                 </div>
                                             </div>
 
                                             <div class="actions-btn">
-                                                <a href="{{ path('book_show', { 'id': book.id }) }}" data-original-title="Посмотреть"><i class="fa fa-eye"></i></a>
+                                                <a href="{{ path('book_show', { 'id': book.id }) }}" data-original-title="Посмотреть">
+                                                    <i class="fa fa-eye"></i>
+                                                </a>
                                                 {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
                                                     {% if book.user.id == app.user.id %}
                                                         <a data-placement="top" data-toggle="tooltip" href="{{ path('book_edit', { 'id': book.id }) }}" data-original-title="Редактировать">
-                                                            <i class="fa fa-pencil-square-o"></i><
-                                                            /a>
+                                                            <i class="fa fa-pencil-square-o"></i>
+                                                        </a>
                                                     {% endif %}
                                                 {% endif %}
+
                                                 {% if book.allowDownload and book.bookFile %}
-                                                    <a href="{{ asset(book_directory_relative ~book.bookFile) }}" target="_blank" download=""><i class="fa fa-cloud-download"></i> Скачать</a>
+                                                    <a href="{{ asset(book_directory_relative ~book.bookFile) }}" target="_blank" download="" data-original-title="Скачать"><i class="fa fa-cloud-download"></i></a>
                                                 {% endif %}
                                             </div>
                                         </div>
