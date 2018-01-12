@@ -22,7 +22,6 @@ class LybrarySubscriber implements EventSubscriber
     public function getSubscribedEvents()
     {
         return array(
-            'index',
             'preRemove',
             'prePersist',
             'preUpdate',

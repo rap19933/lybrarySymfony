@@ -9,6 +9,7 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Validator\Constraints\File;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 
 class BookType extends AbstractType
 {
@@ -29,7 +30,8 @@ class BookType extends AbstractType
                               'mimeTypes' => array('image/png', 'image/jpeg'),
                               'mimeTypesMessage' => 'Выбирете файл формата png или jpg',
                           ))
-                      )
+                      ),
+                      'attr' => ['class' => 'btn btn-primary', 'style' => 'width: 100%; margin-bottom: 20px'],
                 ))
             ->add('bookFile', FileType::class,
                 array('label' => "Файл книги",
@@ -41,28 +43,30 @@ class BookType extends AbstractType
                               'maxSizeMessage' => 'Выбирете файл менее 5 Мб',
                               'notFoundMessage' => 'выбирете файл',
                           ))
-                      )
+                      ),
+                      'attr' => ['class' => 'btn btn-primary', 'style' => 'width: 100%; margin-bottom: 20px'],
             ))
+            ->add('dateRead', DateType::class, array("widget" => "single_text", "label" => "Дата прочтения"))
             ->add('allowDownload', CheckboxType::class, array("label" => "Разрешить скачивание", "required" => false));
     }
     
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+   /* public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
             'data_class' => 'LybraryBundle\Entity\Book'
         ));
-    }
+    }*/
 
     /**
      * {@inheritdoc}
      */
-    public function getBlockPrefix()
+   /* public function getBlockPrefix()
     {
         return 'lybrarybundle_book';
-    }
+    }*/
 
 
 }

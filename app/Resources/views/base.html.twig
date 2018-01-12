@@ -53,9 +53,11 @@
                                     <li>
                                         <a href="{{ path('book_index') }}">Список книг</a>
                                     </li>
-                                    <li>
-                                        <a href="{{ path('book_new') }}">Добавить книгу</a>
-                                    </li>
+                                    {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                                        <li>
+                                            <a href="{{ path('book_new') }}">Добавить книгу</a>
+                                        </li>
+                                    {% endif %}
                                 </ul>
                             </nav>
                         </div>
@@ -67,9 +69,11 @@
                                         <li>
                                             <a href="{{ path('book_index') }}">Список книг</a>
                                         </li>
-                                        <li>
-                                            <a href="{{ path('book_new') }}">Добавить книгу</a>
-                                        </li>
+                                        {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                                            <li>
+                                                <a href="{{ path('book_new') }}">Добавить книгу</a>
+                                            </li>
+                                        {% endif %}
                                     </ul>
                                 </nav>
                             </div>

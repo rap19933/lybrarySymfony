@@ -23,5 +23,3 @@ services:
         tags:
             - { name: doctrine.event_subscriber, connection: default }
         arguments:  ['%cover_directory%', '%book_directory%']
-    cache:
-        class: Doctrine\Common\Cache\FilesystemCache

@@ -5,9 +5,6 @@ namespace LybraryBundle\Controller;
 use LybraryBundle\Entity\Book;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Cache\Simple\FilesystemCache;
-use JMS\Serializer\Expression\ExpressionEvaluator;
-use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
 /**
  * Book controller.
@@ -15,57 +12,24 @@ use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
  */
 class BookController extends Controller
 {
-    private $cache;
-    public function __construct()
-    {
-        $this->cache = new FilesystemCache();
-    }
-    /**
-     * Lists all book entities.
-     *
-     */
-
     public function indexAction(Request $request)
     {
-        if (preg_match('#^[0-9]+$#', $request->query->get("countShow"))){
-            $countShow = $request->query->get("countShow");
-        } else {
-            $countShow =  null;
-        }
+        $cache = $this->get('my_cache');
+        $cacheId = $this->getParameter('cache_books');
 
-        if($request->query->get("myShow") == 1){
-            $filter = array("user" => $this->getUser()->getId());
-            $myShow = 1;
-        } else {
-            $filter = array();
-            $myShow = 0;
-        }
+        if (!$cache->contains($cacheId)) {
 
-        if ($myShow || $countShow) {
             $repository = $this->getDoctrine()->getManager();
-            $books = $repository->getRepository('LybraryBundle:Book')->findBy($filter,array("dateRead" => "DESC"), $countShow);
+            $books = $repository->getRepository('LybraryBundle:Book')->findBy(array(), array("dateRead" => "DESC"));
+            $cache->save($cacheId, $books, $this->getParameter('cache_ttl'));
+
         } else {
-            $serializer = \JMS\Serializer\SerializerBuilder::create()
-                ->setExpressionEvaluator(new ExpressionEvaluator(new ExpressionLanguage()))
-                ->build();
 
-            if (!$this->cache->has($this->getParameter('cache_books'))) {
-                $repository = $this->getDoctrine()->getManager();
-                $books = $repository->getRepository('LybraryBundle:Book')->findBy($filter,array("dateRead" => "DESC"), $countShow);
-
-                $jsonContent = $serializer->serialize($books, 'xml');
-                $this->cache->set($this->getParameter('cache_books'), $jsonContent, $this->getParameter('cache_ttl'));
-
-            } else {
-
-                $books = $serializer->deserialize($this->cache->get($this->getParameter('cache_books')), 'array<LybraryBundle\Entity\Book>', 'xml');
-            }
+            $books = $cache->fetch($cacheId);
         }
 
         return $this->render('LybraryBundle:book:index.html.twig', array(
             'books' => $books,
-            'countShow' => $countShow,
-            'myShow' => $myShow,
             'cover_directory_relative' => $this->getParameter('cover_directory_relative'),
             "book_directory_relative" => $this->getParameter('book_directory_relative'),
         ));
@@ -77,39 +41,22 @@ class BookController extends Controller
      */
     public function newAction(Request $request)
     {
-        $apiKey = md5($this->getParameter('apiKey'));
-
-        if(!$this->getUser())
-        {
-            return $this->render('FOSUserBundle:Security:login.html.twig',
-                array('last_username' => '',
-                      'error' => '',
-                      'csrf_token' => '')
-            );
-        }
-
         $book = new Book();
         $form = $this->createForm('LybraryBundle\Form\BookType', $book);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            if ($request->request->get("apiKey") != $apiKey) {
-                return $this->render('LybraryBundle:book/error.html.twig');
-            };
-
             if (!$book->getBookFile()) {
                 return $this->render('LybraryBundle:book/new.html.twig', array(
                     'book' => $book,
                     'form' => $form->createView(),
                     'error' => 'error',
-                    'apiKey' => $apiKey
                 ));
             }
 
             $book->setUser($this->getUser());
 
-            $book->setDateRead(date_create(date("Y-m-d H:i:s")));
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($book);
@@ -122,7 +69,6 @@ class BookController extends Controller
             'book' => $book,
             'form' => $form->createView(),
             'error' => '',
-            'apiKey' => $apiKey
         ));
     }
 
@@ -133,13 +79,6 @@ class BookController extends Controller
     public function showAction(Book $book)
     {
         $deleteForm = $this->createDeleteForm($book);
-
-        $book->setDateRead(date_create(date("Y-m-d H:i:s")));
-
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($book);
-        $em->flush();
-        $this->deleteCache();
 
         return $this->render('LybraryBundle:book:show.html.twig', array(
             'cover_directory_relative' => $this->getParameter('cover_directory_relative'),
@@ -155,7 +94,7 @@ class BookController extends Controller
     public function editAction(Request $request, Book $book)
     {
 
-        if(!$this->getUser() || $this->getUser()->getId() !== $book->getUser()->getId())
+        if($this->getUser()->getId() !== $book->getUser()->getId())
         {
             return $this->render('FOSUserBundle:Security:login.html.twig',
                 array('last_username' => '',
@@ -218,7 +157,7 @@ class BookController extends Controller
     }
     public function deleteCache()
     {
-        $this->cache->delete($this->getParameter('cache_books'));
+        $this->get('my_cache')->delete($this->getParameter('cache_books'));
     }
 
     public function errorAction()

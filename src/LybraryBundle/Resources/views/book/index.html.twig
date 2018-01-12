@@ -7,34 +7,6 @@
             <div class="row">
                 <div class="col-md-12 col-sm-12 col-xs-12">
                     <div class="features-tab">
-                        <!-- Nav tabs -->
-                        <div class="shop-all-tab">
-                            <div class="re-shop">
-
-                                <div class="sort-by">
-                                    <div class="shop6">
-                                        <label>Показывать :</label>
-                                        <select id="cd-dropdown" onchange="top.location=this.value">
-                                            <option value="{{ path('book_index') }}{% if countShow  %}?countShow={{ countShow }}{% endif %}">Все</option>
-                                            {% if app.user %}
-                                                <option value="{{ path('book_index') }}?myShow=1{% if countShow  %}&countShow={{ countShow }}{% endif %}" {% if myShow == 1 %}selected{% endif %}>Мои</option>
-                                            {% endif %}
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="shop5">
-                                    <label>Количество :</label>
-                                    <select id="cd-dropdown" onchange="top.location=this.value">
-                                        <option value="{{ path('book_index') }}{% if myShow  %}?myShow=1{% endif %}">...</option>
-                                        <option value="{{ path('book_index') }}?countShow=1{% if myShow  %}&myShow=1{% endif %}" {% if countShow == 1 %}selected{% endif %}>1</option>
-                                        <option value="{{ path('book_index') }}?countShow=2{% if myShow  %}&myShow=1{% endif %}" {% if countShow == 2 %}selected{% endif %}>2</option>
-                                        <option value="{{ path('book_index') }}?countShow=3{% if myShow  %}&myShow=1{% endif %}" {% if countShow == 3 %}selected{% endif %}>3</option>
-                                    </select>
-                                </div>
-
-                            </div>
-                        </div>
                         <!-- Tab panes -->
                         <div class="tab-content">
                             <div class="row">

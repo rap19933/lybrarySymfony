@@ -88,7 +88,7 @@ hr.line {
   position: relative;
 }
 .section-padding{padding:90px 0;}
-.section-padding-top{padding-top:85px;}
+.section-padding-top{padding-top:115px;}
 .section-padding-bottom{padding-bottom:90px;}
 .d-table {
     display: table;
@@ -3602,9 +3602,13 @@ a.o-back-to:hover {
 .cendo textarea.form-control {
     height: 40px;
 }
+.cendo .buttons-file-del {
+    margin: 0 0 -34px;
+}
 .cendo .buttons {
     margin: 0 0 0;
 }
+
 .cendo .btn {
   background: #222 none repeat scroll 0 0;
   border: 0 none;

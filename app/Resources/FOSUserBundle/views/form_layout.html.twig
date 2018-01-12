@@ -3,16 +3,16 @@
 {% block file_widget %}
 <div class="col-md-10">
     {% if data and name == "cover" %}
-        <div class="buttons" >
+        <div class="buttons-file-del" >
             <input id="delete_img" formaction="{{ path('book_edit', { 'id': form.parent.vars.value.id }) }}?img=y" class="btn btn-primary" type="submit" value="Удалить" style="width: 20%; margin-bottom: 0px">
         </div>
         <div class="pull-right">
-            <input type="{{ type }}" {{ block('widget_attributes') }} class="btn btn-primary" style="width: 100%; margin-bottom: 20px; margin-top: -40px"/>
+            <input type="{{ type }}" {{ block('widget_attributes') }}/>
         </div>
 
     {% else %}
         {% set type = type|default('file') %}
-        <input type="{{ type }}" {{ block('widget_attributes') }} class="btn btn-primary" style="width: 100%; margin-bottom: 20px"/>
+        <input type="{{ type }}" {{ block('widget_attributes') }}/>
     {% endif %}
 </div>
 {% endblock file_widget %}

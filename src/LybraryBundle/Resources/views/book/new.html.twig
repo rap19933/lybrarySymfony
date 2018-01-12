@@ -13,14 +13,13 @@
 
     {{ form_start(form, { 'attr': { 'class': 'cendo' } }) }}
         {{ form_widget(form) }}
-        <input type="hidden" name="apiKey" value="{{ apiKey }}" />
         <div class="col-md-12">
             <div class="buttons">
                 <div class="pull-right">
                     <input type="submit" class="btn btn-primary" value="Создать" />
                 </div>
             </div>
-            <a class="btn btn-primary pull-left" href="{{ path('book_index') }}">Назад</a>
+            <a class="btn btn-primary pull-left" href="{{ path('book_index') }}">{{ 'create'|trans({}, 'trans1') }}Назад</a>
         </div>
 
     {{ form_end(form) }}
