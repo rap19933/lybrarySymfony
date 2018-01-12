@@ -62,7 +62,7 @@ class BookController extends Controller
             }
         }
 
-        return $this->render('book/index.html.twig', array(
+        return $this->render('LybraryBundle:book:index.html.twig', array(
             'books' => $books,
             'countShow' => $countShow,
             'myShow' => $myShow,
@@ -95,11 +95,11 @@ class BookController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
 
             if ($request->request->get("apiKey") != $apiKey) {
-                return $this->render('book/error.html.twig');
+                return $this->render('LybraryBundle:book/error.html.twig');
             };
 
             if (!$book->getBookFile()) {
-                return $this->render('book/new.html.twig', array(
+                return $this->render('LybraryBundle:book/new.html.twig', array(
                     'book' => $book,
                     'form' => $form->createView(),
                     'error' => 'error',
@@ -118,7 +118,7 @@ class BookController extends Controller
             return $this->redirectToRoute('book_show', array('id' => $book->getId()));
         }
 
-        return $this->render('book/new.html.twig', array(
+        return $this->render('LybraryBundle:book:new.html.twig', array(
             'book' => $book,
             'form' => $form->createView(),
             'error' => '',
@@ -141,7 +141,7 @@ class BookController extends Controller
         $em->flush();
         $this->deleteCache();
 
-        return $this->render('book/show.html.twig', array(
+        return $this->render('LybraryBundle:book:show.html.twig', array(
             'cover_directory_relative' => $this->getParameter('cover_directory_relative'),
             'book' => $book,
             'delete_form' => $deleteForm->createView(),
@@ -176,7 +176,7 @@ class BookController extends Controller
             return $this->redirectToRoute('book_edit', array('id' => $book->getId()));
         }
 
-        return $this->render('book/edit.html.twig', array(
+        return $this->render('LybraryBundle:book:edit.html.twig', array(
             'book' => $book,
             'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
@@ -223,6 +223,6 @@ class BookController extends Controller
 
     public function errorAction()
     {
-        return $this->render('book/error.html.twig');
+        return $this->render('LybraryBundle:book:error.html.twig');
     }
 }
