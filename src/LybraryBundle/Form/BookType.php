@@ -10,6 +10,11 @@ use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Translation\Loader\YamlFileLoader;
+use Symfony\Component\Translation\Translator;
+use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Translation\MessageSelector;
 
 class BookType extends AbstractType
 {
@@ -18,6 +23,14 @@ class BookType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+
+       /* $translator = new Translator($this->getParameter('cover_directory_relative'));
+        dump($translator->getLocale());
+        $translator->addLoader('yaml', new YamlFileLoader());
+
+        $translator->addResource('yaml', __DIR__ . '/translations/form_trans.ru.yml' , 'ru');
+        dump($translator->trans('name_book'));*/
+
         $builder
             ->add('name', TextType::class, array("label" => "Название книги"))
             ->add('author', TextType::class, array("label" => "Автор книги"))

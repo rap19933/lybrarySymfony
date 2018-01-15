@@ -41,6 +41,8 @@ class BookController extends Controller
      */
     public function newAction(Request $request)
     {
+      /*  dump($this->get('translator')->trans('name_book'));*/
+
         $book = new Book();
         $form = $this->createForm('LybraryBundle\Form\BookType', $book);
         $form->handleRequest($request);

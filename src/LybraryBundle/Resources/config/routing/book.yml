@@ -27,3 +27,20 @@ book_error:
     path:     /error
     defaults: { _controller: "LybraryBundle:Book:error" }
     methods:  GET
+
+book_index_api:
+    path:     /api/v1/books/
+    defaults: { _controller: "LybraryBundle:Api:index", _format: "json" }
+    methods:  GET
+
+book_add_api:
+    path:     /api/v1/books/add
+    defaults: { _controller: "LybraryBundle:Api:add" }
+    methods:  [GET, POST]
+
+book_edit_api:
+    path:     api/v1/books/{id}/edit
+    defaults: { _controller: "LybraryBundle:Api:edit", _format: "json" }
+    methods:  [GET, POST]
+    requirements:
+        id: \d+

@@ -1,12 +1,12 @@
 {% extends 'layout.html.twig' %}
-{% block title %}Создание книги{% endblock %}
+{% block title %}{{ 'create_book'|trans({}, 'lybrary_trans') }}{% endblock %}
 
 {% block contentBook %}
 
-    <h1>Создание книги</h1>
+    <h1>{{ 'create_book'|trans({}, 'lybrary_trans') }}</h1>
 
     {% if error %}
-        <p style="color: red">Поле "Файл книги" обязательна для заполнения!!!</p>
+        <p style="color: red">{{ 'error_create'|trans({}, 'lybrary_trans') }}</p>
     {% endif %}
 
     {% form_theme form '@FOSUser/form_layout.html.twig' %}
@@ -16,10 +16,10 @@
         <div class="col-md-12">
             <div class="buttons">
                 <div class="pull-right">
-                    <input type="submit" class="btn btn-primary" value="Создать" />
+                    <input type="submit" class="btn btn-primary" value="{{ 'create'|trans({}, 'lybrary_trans') }}" />
                 </div>
             </div>
-            <a class="btn btn-primary pull-left" href="{{ path('book_index') }}">{{ 'create'|trans({}, 'trans1') }}Назад</a>
+            <a class="btn btn-primary pull-left" href="{{ path('book_index') }}">{{ 'back'|trans({}, 'lybrary_trans') }}</a>
         </div>
 
     {{ form_end(form) }}

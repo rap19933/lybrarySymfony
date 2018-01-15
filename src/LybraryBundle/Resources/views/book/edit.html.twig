@@ -1,9 +1,9 @@
 {% extends 'layout.html.twig' %}
-{% block title %}Редактирование книги{% endblock %}
+{% block title %}{{ 'edit_books'|trans({}, 'lybrary_trans') }}{% endblock %}
 
 {% block contentBook %}
 
-    <h1>Редактирование книги</h1>
+    <h1>{{ 'edit_books'|trans({}, 'lybrary_trans') }}</h1>
     {% form_theme edit_form '@FOSUser/form_layout.html.twig' %}
 
     {{ form_start(edit_form, { 'attr': { 'class': 'cendo' } }) }}
@@ -11,13 +11,13 @@
             <div class="col-md-12">
                 <div class="buttons">
                     <div class="pull-right">
-                        <input type="submit" class="btn btn-primary" value="Изменить" />
+                        <input type="submit" class="btn btn-primary" value="{{ 'edit'|trans({}, 'lybrary_trans') }}" />
                     </div>
                 </div>
     {{ form_end(edit_form) }}
 
     {{ form_start(delete_form, { 'attr': { 'class': 'cendo' } }) }}
-                <input class="btn btn-primary" type="submit" value="Удалить">
+                <input class="btn btn-primary" type="submit" value="{{ 'delete'|trans({}, 'lybrary_trans') }}">
              </div>
     {{ form_end(delete_form) }}
 
