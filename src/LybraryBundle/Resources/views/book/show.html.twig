@@ -50,13 +50,11 @@
                                                             {{ 'edit'|trans({}, 'lybrary_trans') }}
                                                             <i class="fa fa-pencil-square-o"></i>
                                                         </a>
-                                                        {{ form_start(delete_form) }}
-                                                            {{ form_widget(delete_form) }}
-                                                                <a>
-                                                                    <i class="fa fa-low-vision" type="submit" value="Delete"></i>
-                                                                    <input type="submit" value="{{ 'delete'|trans({}, 'lybrary_trans') }}">
-                                                                </a>
-                                                        {{ form_end(delete_form) }}
+
+                                                        <a href="{{ path('book_delete', { 'id': book.id }) }}">
+                                                            {{ 'delete'|trans({}, 'lybrary_trans') }}
+                                                            <i class="fa fa-times"></i>
+                                                        </a>
                                                     {% endif %}
                                                 {% endif %}
                                             </div>

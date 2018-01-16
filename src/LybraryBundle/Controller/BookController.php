@@ -6,10 +6,7 @@ use LybraryBundle\Entity\Book;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
-/**
- * Book controller.
- *
- */
+
 class BookController extends Controller
 {
     public function indexAction(Request $request)
@@ -24,7 +21,6 @@ class BookController extends Controller
             $cache->save($cacheId, $books, $this->getParameter('cache_ttl'));
 
         } else {
-
             $books = $cache->fetch($cacheId);
         }
 
@@ -35,10 +31,6 @@ class BookController extends Controller
         ));
     }
 
-    /**
-     * Creates a new book entity.
-     *
-     */
     public function newAction(Request $request)
     {
       /*  dump($this->get('translator')->trans('name_book'));*/
@@ -48,18 +40,7 @@ class BookController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
-            if (!$book->getBookFile()) {
-                return $this->render('LybraryBundle:book/new.html.twig', array(
-                    'book' => $book,
-                    'form' => $form->createView(),
-                    'error' => 'error',
-                ));
-            }
-
             $book->setUser($this->getUser());
-
-
             $em = $this->getDoctrine()->getManager();
             $em->persist($book);
             $em->flush();
@@ -74,25 +55,14 @@ class BookController extends Controller
         ));
     }
 
-    /**
-     * Finds and displays a book entity.
-     *
-     */
     public function showAction(Book $book)
     {
-        $deleteForm = $this->createDeleteForm($book);
-
         return $this->render('LybraryBundle:book:show.html.twig', array(
             'cover_directory_relative' => $this->getParameter('cover_directory_relative'),
             'book' => $book,
-            'delete_form' => $deleteForm->createView(),
         ));
     }
 
-    /**
-     * Displays a form to edit an existing book entity.
-     *
-     */
     public function editAction(Request $request, Book $book)
     {
 
@@ -124,21 +94,22 @@ class BookController extends Controller
         ));
     }
 
-    /**
-     * Deletes a book entity.
-     *
-     */
     public function deleteAction(Request $request, Book $book)
     {
-        $form = $this->createDeleteForm($book);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->remove($book);
-            $em->flush();
-            $this->deleteCache();
+        if($this->getUser()->getId() !== $book->getUser()->getId())
+        {
+            return $this->render('FOSUserBundle:Security:login.html.twig',
+                array('last_username' => '',
+                      'error' => '',
+                      'csrf_token' => '')
+            );
         }
+
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($book);
+        $em->flush();
+        $this->deleteCache();
+
         return $this->redirectToRoute('book_index');
     }
 
@@ -160,10 +131,5 @@ class BookController extends Controller
     public function deleteCache()
     {
         $this->get('my_cache')->delete($this->getParameter('cache_books'));
-    }
-
-    public function errorAction()
-    {
-        return $this->render('LybraryBundle:book:error.html.twig');
     }
 }

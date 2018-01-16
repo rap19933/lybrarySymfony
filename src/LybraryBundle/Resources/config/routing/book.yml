@@ -17,16 +17,15 @@ book_edit:
     path:     /{id}/edit
     defaults: { _controller: "LybraryBundle:Book:edit" }
     methods:  [GET, POST]
+    requirements:
+        id: \d+
 
 book_delete:
     path:     /{id}/delete
     defaults: { _controller: "LybraryBundle:Book:delete" }
-    methods:  DELETE
-
-book_error:
-    path:     /error
-    defaults: { _controller: "LybraryBundle:Book:error" }
-    methods:  GET
+    methods:  [GET, DELETE]
+    requirements:
+        id: \d+
 
 book_index_api:
     path:     /api/v1/books/
@@ -34,12 +33,12 @@ book_index_api:
     methods:  GET
 
 book_add_api:
-    path:     /api/v1/books/add
-    defaults: { _controller: "LybraryBundle:Api:add" }
+    path:     /api/v1/books/add/
+    defaults: { _controller: "LybraryBundle:Api:add", _format: "json" }
     methods:  [GET, POST]
 
 book_edit_api:
-    path:     api/v1/books/{id}/edit
+    path:     /api/v1/books/{id}/edit
     defaults: { _controller: "LybraryBundle:Api:edit", _format: "json" }
     methods:  [GET, POST]
     requirements:
