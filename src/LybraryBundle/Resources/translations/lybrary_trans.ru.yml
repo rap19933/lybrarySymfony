@@ -1,6 +1,5 @@
 back: Назад
 create_book: Создание книги
-error_create: Поле "Файл книги" обязательна для заполнения!!!
 create: Создать
 view_books: Просмотр книги
 name_book: Название книги:
@@ -11,3 +10,4 @@ delete: Удалить
 home: Главная
 my: Моя
 edit_books: Редактирование книги
+invalid_api_key: Неверный api ключ

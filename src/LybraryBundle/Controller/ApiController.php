@@ -16,7 +16,13 @@ class ApiController extends Controller
     public function indexAction(Request $request)
     {
         if (!$this->checkApiKey($request)) {
-            return new JsonResponse(['success' => false, 'error' => 401, 'message' => 'Invalid api key']);
+            return new JsonResponse(
+                array(
+                    'success' => false,
+                    'error' => 401,
+                    'message' => $this->get('translator')->trans('invalid_api_key', array(), 'lybrary_trans')
+                )
+            );
         };
 
         $repository = $this->getDoctrine()->getManager();
@@ -45,7 +51,13 @@ class ApiController extends Controller
         if ($request->getMethod() == 'POST') {
 
             if (!$this->checkApiKey($request)) {
-                return new JsonResponse(['success' => false, 'error' => 401, 'message' => 'Invalid api key']);
+                return new JsonResponse(
+                    array(
+                        'success' => false,
+                        'error' => 401,
+                        'message' => $this->get('translator')->trans('invalid_api_key', array(), 'lybrary_trans')
+                    )
+                );
             };
 
             $requestData = $request->request->all();
@@ -85,7 +97,13 @@ class ApiController extends Controller
         if ($request->getMethod() == 'POST') {
 
             if (!$this->checkApiKey($request)) {
-                return new JsonResponse(['success' => false, 'error' => 401, 'message' => 'Invalid api key']);
+                return new JsonResponse(
+                    array(
+                        'success' => false,
+                        'error' => 401,
+                        'message' => $this->get('translator')->trans('invalid_api_key', array(), 'lybrary_trans')
+                    )
+                );
             };
 
             $requestData = $request->request->all();

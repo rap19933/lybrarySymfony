@@ -286,7 +286,7 @@ header li i {
 }
 #searchform button i {
 	line-height: 20px;
-	margin: 0;
+	margin: 3px;
 	padding: 0 5px;
 }
 .right-header li:hover #searchform {

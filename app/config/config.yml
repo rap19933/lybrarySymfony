@@ -25,9 +25,9 @@ framework:
     #esi: ~
    # translator: { fallbacks: ['%locale%'] }
     translator:
-       # fallbacks: ['%locale%']
-        paths:
-           - "%kernel.project_dir%/src/LybraryBundle/Resources/translations/"
+        fallbacks: ['%locale%']
+       # paths:
+          #  - "%kernel.project_dir%/src/LybraryBundle/Resources/translations/"
     secret: '%secret%'
     router:
         resource: '%kernel.project_dir%/app/config/routing.yml'
@@ -57,7 +57,7 @@ twig:
 # Doctrine Configuration
 doctrine:
     dbal:
-        driver: pdo_pgsql
+        driver: pdo_mysql
         host: '%database_host%'
         port: '%database_port%'
         dbname: '%database_name%'

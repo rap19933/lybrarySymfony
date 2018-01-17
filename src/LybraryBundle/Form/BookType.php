@@ -30,7 +30,8 @@ class BookType extends AbstractType
 
         $translator->addResource('yaml', __DIR__ . '/translations/form_trans.ru.yml' , 'ru');
         dump($translator->trans('name_book'));*/
-
+        dump(\Symfony\Component\Translation\TranslatorInterface::trans('create_book', array(), 'lybrary_trans', 'ru'));
+        dump($this->get('translator')->trans('create_book', array(), 'lybrary_trans'));
         $builder
             ->add('name', TextType::class, array("label" => "Название книги"))
             ->add('author', TextType::class, array("label" => "Автор книги"))

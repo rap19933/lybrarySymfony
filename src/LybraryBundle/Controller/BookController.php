@@ -8,9 +8,10 @@ use Symfony\Component\HttpFoundation\Request;
 
 class BookController extends Controller
 {
-    public function indexAction()
+    public function indexAction(Request $request)
     {
-        /*dump($this->get('translator')->trans('name_book'));*/
+        dump($languages = $request->getLanguages());
+        dump($request->getLocale());
         $cache = $this->get('my_cache');
         $cacheId = $this->getParameter('cache_books');
 
