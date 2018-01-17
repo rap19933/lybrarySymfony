@@ -47,42 +47,167 @@
                 </div>
                 <div class="col-sm-10 col-md-10 col-xs-8 static">
                     <div class="all-manu-area">
+                        <div class="right-header re-right-header">
+                            <input type="hidden" value="{{ app.request.getSchemeAndHttpHost() }}{{ app.request.getBaseURL() }}" name="baseURL">
+                            <ul>
+                                <li>
+                                    <a>{{ 'list_books_api'|trans({}, 'base_trans') }}</a>
+                                    <div id="searchform">
+                                        <input type="text" value="" name="api_key" placeholder="{{ 'api_key'|trans({}, 'base_trans') }}">
+                                        <button><i id="api_list" class="pe-7s-search"></i></button>
+                                        <div class="result_list">
+                                            <p></p>
+                                        </div>
+                                    </div>
+
+                                </li>
+                                <script>
+                                    $(document).on("click", "#api_list", function() {
+                                        var url = $("input[name='baseURL']").val();
+                                        var apiKey = $("input[name='api_key']").val();
+                                        $.ajax({
+                                            url: url+"/api/v1/books/?apiKey="+apiKey,
+                                            dataType : "json",
+                                            type: "GET",
+                                            success: function (data) {
+                                                alertObj(data);
+                                            }
+                                        });
+                                    });
+                                    function alertObj(obj) {
+                                        var resultError = "";
+                                        var resultObj = "";
+                                        var strProperty = "";
+                                        for(k in obj) {
+                                            if (typeof(obj[k]) == "object"){
+                                                $.each(obj[k], function(i, val) {
+                                                    strProperty += i+': '+val+' ';
+                                                });
+                                                resultObj += '<p><h6>'+k+"</h6>"+strProperty+'</p></br>';
+
+                                            } else {
+                                                resultError += k+": "+ obj[k]+"\r\n";
+
+                                            }
+                                        }
+                                        if(resultError != ""){
+                                            $(".result_list").css("visibility","hidden");
+                                            alert(resultError);
+                                        } else {
+                                            $(".result_list p").html(resultObj);
+                                            $(".result_list").css("visibility","visible");
+                                        }
+                                    }
+                                </script>
+                                <li>
+                                    <a>
+                                       {{ 'add_books_api'|trans({}, 'base_trans') }}
+                                    </a>
+                                    <ul class="drop-cart">
+                                        <li>
+                                            <input type="text" value="" name="api_key_add" placeholder="{{ 'api_key'|trans({}, 'base_trans') }}">
+                                        </li>
+                                        <li>
+                                            <input type="text" value="" name="api_email_add" placeholder="{{ 'api_email_add'|trans({}, 'base_trans') }}">
+                                        </li>
+                                        <li>
+                                            <input type="text" value="" name="name_book_add" placeholder="{{ 'name_book'|trans({}, 'base_trans') }}">
+                                        </li>
+                                        <li>
+                                            <input type="text" value="" name="author_book_add" placeholder="{{ 'author_book'|trans({}, 'base_trans') }}">
+                                        </li>
+                                        <li>
+                                            {{ 'dateRead_book'|trans({}, 'base_trans') }}
+                                            <input type="date" value="" name="dateRead_book_add">
+                                        </li>
+                                        <li><label for="coding">{{ 'allow_download'|trans({}, 'base_trans') }}</label>
+                                            <input type="checkbox" value="1" name="allowDownload_book_add" checked>
+                                        </li>
+                                        <li class="checkout-btn text-center add_books_api">
+                                            <a>{{ 'add_book'|trans({}, 'base_trans') }}</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <script>
+                                   $(document).on("click", ".add_books_api", function() {
+                                        $.ajax({
+                                            url: $("input[name='baseURL']").val()+"/api/v1/books/add/",
+                                            dataType : "json",
+                                            type: "POST",
+                                            data:
+                                                {
+                                                    apiKey: $("input[name='api_key_add']").val(),
+                                                    email: $("input[name='api_email_add']").val(),
+                                                    name: $("input[name='name_book_add']").val(),
+                                                    author: $("input[name='author_book_add']").val(),
+                                                    dateRead: $("input[name='dateRead_book_add']").val(),
+                                                    allowDownload: $("input[name='allowDownload_book_add']").prop('checked')
+                                                },
+                                            success: function (data) {
+                                                alertObj(data);
+                                            }
+                                        });
+                                    });
+                                </script>
+                                <li>
+                                    <a>
+                                        {{ 'edit_books_api'|trans({}, 'base_trans') }}
+                                    </a>
+                                    <ul class="drop-cart">
+                                        <li>
+                                            <input type="text" value="" name="api_key_edit" placeholder="{{ 'api_key'|trans({}, 'base_trans') }}">
+                                        </li>
+                                        <li>
+                                            <input type="text" value="" name="api_id_edit" placeholder="{{ 'id_book'|trans({}, 'base_trans') }}">
+                                        </li>
+                                        <li>
+                                            <input type="text" value="" name="name_book_edit" placeholder="{{ 'name_book'|trans({}, 'base_trans') }}">
+                                        </li>
+                                        <li>
+                                            <input type="text" value="" name="author_book_edit" placeholder="{{ 'author_book'|trans({}, 'base_trans') }}">
+                                        </li>
+                                        <li>
+                                            {{ 'dateRead_book'|trans({}, 'base_trans') }}
+                                            <input type="date" value="" name="dateRead_book_edit">
+                                        </li>
+                                        <li><label for="coding">{{ 'allow_download'|trans({}, 'base_trans') }}</label>
+                                            <input type="checkbox" value="1" name="allowDownload_book_edit" checked>
+                                        </li>
+                                        <li class="checkout-btn text-center edit_books_api">
+                                            <a>{{ 'edit_book'|trans({}, 'base_trans') }}</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <script>
+                                    $(document).on("click", ".edit_books_api", function() {
+                                        $.ajax({
+                                            url: $("input[name='baseURL']").val()+"/api/v1/books/"+$("input[name='api_id_edit']").val()+"/edit",
+                                            dataType : "json",
+                                            type: "POST",
+                                            data:
+                                                {
+                                                    apiKey: $("input[name='api_key_edit']").val(),
+                                                    name: $("input[name='name_book_edit']").val(),
+                                                    author: $("input[name='author_book_edit']").val(),
+                                                    dateRead: $("input[name='dateRead_book_edit']").val(),
+                                                    allowDownload: $("input[name='allowDownload_book_edit']").prop('checked')
+                                                },
+                                            success: function (data) {
+                                                alertObj(data);
+                                            }
+                                        });
+                                    });
+                                </script>
+                            </ul>
+                        </div>
+
                         <div class="mainmenu clearfix hidden-sm hidden-xs">
                             <nav>
                                 <ul>
-                                    <li>
-                                        <a id="api_list">{{ 'list_books'|trans({}, 'base_trans') }}</a>
-                                    </li>
-                                    <script>
-                                        $(document).on("click", "#api_list", function(event) {
+ {#                                   <li>
+                                        <a id="api_list">{{ 'list_books_api'|trans({}, 'base_trans') }}</a>
+                                    </li>#}
 
-
-                                            $.ajax({
-                                                url: "http://symfony.loc/app_dev.php/api/v1/books/?apiKey=as",
-                                                dataType : "json",
-                                                type: "GET",
-                                                success: function (data) {
-                                                    alertObj(data);
-                                                }
-                                            });
-                                        });
-                                        function alertObj(obj) {
-                                            var str = "";
-                                            var strProperty = "";
-                                            for(k in obj) {
-                                                if (typeof(obj[k]) == "object"){
-                                                    $.each(obj[k], function(i, val) {
-                                                        strProperty += i+': '+val+'\r';
-                                                    });
-                                                    str += strProperty+"\r\n";
-                                                } else {
-                                                    str += k+": "+ obj[k]+"\r\n";
-                                                }
-
-                                            }
-                                            alert(str);
-                                        }
-                                    </script>
                                     <li>
                                         <a class="result"></a>
                                     </li>

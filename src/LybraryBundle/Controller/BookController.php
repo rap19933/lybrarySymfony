@@ -11,6 +11,7 @@ class BookController extends Controller
 {
     public function indexAction(Request $request)
     {
+        dump($this->get('translator')->trans('name_book'));
         $cache = $this->get('my_cache');
         $cacheId = $this->getParameter('cache_books');
 
@@ -33,8 +34,6 @@ class BookController extends Controller
 
     public function newAction(Request $request)
     {
-      /*  dump($this->get('translator')->trans('name_book'));*/
-
         $book = new Book();
         $form = $this->createForm('LybraryBundle\Form\BookType', $book);
         $form->handleRequest($request);

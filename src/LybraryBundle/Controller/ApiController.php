@@ -42,28 +42,34 @@ class ApiController extends Controller
 
     public function addAction(Request $request)
     {
-        if ($request->getMethod() !== 'POST') {
+        if ($request->getMethod() == 'POST') {
 
             if (!$this->checkApiKey($request)) {
                 return new JsonResponse(['success' => false, 'error' => 401, 'message' => 'Invalid api key']);
             };
 
             $requestData = $request->request->all();
-            $book = new Book();
 
-           /* $book->setDateRead(new \DateTime(date('Y-m-d', strtotime($requestData('dateRead')))));
-            $book->setDateRead(date_create(date("Y-m-d H:i:s")));*/
-
-            if (!empty($requestData['name']) && !empty($requestData['author']) && !empty($requestData['dateRead'])) {
+            if (!empty($requestData['name']) &&
+                !empty($requestData['author']) &&
+                !empty($requestData['dateRead']) &&
+                !empty($requestData['email'])
+            ) {
+                $user = $this->getDoctrine()->getRepository('LybraryBundle:User')->findOneBy(['email' => $requestData['email']]);
+                if (!$user) {
+                    return new JsonResponse(['success' => false, 'error' => 402, 'message' => 'Invalid email']);
+                }
+                $book = new Book();
                 $book->setName($requestData['name']);
                 $book->setAuthor($requestData['author']);
                 $book->setDateRead(new \DateTime($requestData['dateRead']));
-                $book->setAllowDownload($requestData['allowDownload'] == true);
-                $book->setUser($this->getDoctrine()->getRepository('LybraryBundle:User')->find(1));
+                $book->setAllowDownload($requestData['allowDownload']);
+                $book->setUser($user);
 
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($book);
                 $em->flush();
+                $this->deleteCache();
 
                 return new JsonResponse(['success' => true, 'error' => false, 'message' => 'Add book']);
             } else {
@@ -93,42 +99,28 @@ class ApiController extends Controller
             if (!empty($requestData['dateRead'])) {
                 $book->setDateRead(new \DateTime($requestData['dateRead']));
             }
-            if (!empty($requestData['allowDownload'])) {
-                $book->setAllowDownload($requestData['allowDownload']);
-            }
+
+            $book->setAllowDownload($requestData['allowDownload']);
 
 
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($book);
+            $em->flush();
+            $this->deleteCache();
 
-            if (!empty($requestData['name']) && !empty($requestData['author']) && !empty($requestData['dateRead'])) {
-                $book->setName($requestData['name']);
-                $book->setAuthor($requestData['author']);
-                $book->setDateRead(new \DateTime($requestData['dateRead']));
-                $book->setAllowDownload($requestData['allowDownload'] == true);
-                $book->setUser($this->getDoctrine()->getRepository('LybraryBundle:User')->find(1));
+            return new JsonResponse(['success' => true, 'error' => false, 'message' => 'Edit book']);
 
-                $em = $this->getDoctrine()->getManager();
-                $em->persist($book);
-                $em->flush();
-
-                return new JsonResponse(['success' => true, 'error' => false, 'message' => 'Add book']);
-            } else {
-                return new JsonResponse(['success' => false, 'error' => 402, 'message' => 'Invalid parameters']);
-            }
         } else {
             return new JsonResponse(['success' => false, 'error' => 405, 'message' => 'Invalid method']);
         }
-echo('<pre>');
-print_r($book);
-echo('</pre>');
-        $book->setName('999');
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($book);
-        $em->flush();
-        return new JsonResponse(['success' => false, 'error' => 405, 'message' => 'Invalid method']);
     }
 
     private function checkApiKey($request)
     {
         return $request->get("apiKey") == $this->getParameter('apiKey');
+    }
+    public function deleteCache()
+    {
+        $this->get('my_cache')->delete($this->getParameter('cache_books'));
     }
 }

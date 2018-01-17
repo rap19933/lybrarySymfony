@@ -17,7 +17,7 @@
 		if($(this).attr("href") == pgurl || $(this).attr("href") == '' )
 		$(this).addClass("active");
 	})
-	$( "header ul li ul,.header-bottom-two ul li ul ,.magamenu " ).parent('li').addClass('drop-icon re-icon');
+	//$( "header ul li ul,.header-bottom-two ul li ul ,.magamenu " ).parent('li').addClass('drop-icon re-icon');
 
 /*----------------------------
  owl active

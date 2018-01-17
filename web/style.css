@@ -206,7 +206,7 @@ header li i {
     padding: 0;
 	position: relative;
 }
-.right-header {float: right;}
+.right-header {float: left;}
 .right-header span,.left-header p,header li i {color: #fff;}
 .right-header ul li,.left-header p{line-height:1;}
 .header-top-two .right-header span,.header-top-two .left-header p,.header-top-two li i {color: #999;}
@@ -255,6 +255,25 @@ header li i {
 	position: relative;
 	width: 100%;
 }
+#searchform .result_list {
+    background: #666 none repeat scroll 0 0;
+    border: 1px solid #999;
+    color: #ccc;
+    float: left;
+    font-size: 12px;
+    padding: 10.5px 0 8.5px 10px;
+    position: relative;
+    width: 900px;
+    height: 400px;
+    overflow-y: auto;
+    visibility: hidden;
+}
+
+#searchform .result_list p {
+    color: #f0f0f0ff;
+    font-size: 10px;
+}
+
 #searchform button {
 	background: #333 none repeat scroll 0 0;
 	border: 0 none;
@@ -4748,4 +4767,11 @@ h2.page-title {
 .file_upload:active > button{
     background: #5d00b3;
     box-shadow: 0 0 3px rgba(0,0,0,0.3) inset
+}
+
+.right-header ul.drop-cart input{
+    width: 100%;
+}
+.right-header ul.drop-cart input[type="checkbox"]{
+    width: 49%;
 }
