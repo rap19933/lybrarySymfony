@@ -23,3 +23,7 @@ services:
         tags:
             - { name: doctrine.event_subscriber, connection: default }
         arguments:  ['%cover_directory%', '%book_directory%']
+
+    lybrary.my_trans:
+        class: LybraryBundle\Form\BookType
+        arguments:  ['%locale%']

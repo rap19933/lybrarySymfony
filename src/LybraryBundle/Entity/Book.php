@@ -4,7 +4,8 @@ namespace LybraryBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
-//use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Constraints as Assert;
+
 /**
  * Book
  *
@@ -27,6 +28,7 @@ class Book
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
+     * @Assert\NotBlank()
      */
     private $name;
 
@@ -34,6 +36,7 @@ class Book
      * @var string
      *
      * @ORM\Column(name="author", type="string", length=255)
+     * @Assert\NotBlank()
      */
     private $author;
 

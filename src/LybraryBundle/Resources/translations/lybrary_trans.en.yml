@@ -11,3 +11,8 @@ home: Home
 my: My
 edit_books: Editing a book
 invalid_api_key: Invalid api key
+invalid_email: Invalid email
+add_book_ok: Add book
+edit_book: Edit book
+invalid_parameters: Invalid parameters
+invalid_method: Invalid method

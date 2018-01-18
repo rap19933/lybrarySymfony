@@ -13,13 +13,17 @@
                             <div class="pro-img-tab-content tab-content">
                                 <div class="tab-pane active" id="image-1">
                                     <div class="simpleLens-big-image-container">
-                                        <a class="simpleLens-lens-image" data-lightbox="roadtrip" data-lens-image="{{ asset('uploads/cover/' ~book.cover) }}" href="">
+
                                         {% if book.cover %}
-                                            <img class="simpleLens-big-image" alt="Product Title" src="{{ asset(cover_directory_relative ~book.cover) }}" {{ show_img(453, 600) }}>
+                                             <a class="simpleLens-lens-image" data-lightbox="roadtrip" data-lens-image="{{ asset(cover_directory_relative ~book.cover) }}" href="">
+                                                 <img class="simpleLens-big-image" alt="Product Title" src="{{ asset(cover_directory_relative ~book.cover) }}" {{ show_img(453, 600) }}>
+                                             </a>
                                         {% else %}
-                                            <img class="simpleLens-big-image" alt="Product Title" src="{{ asset('uploads/nocover.jpg') }}">
+                                            <a class="simpleLens-lens-image" data-lightbox="roadtrip" data-lens-image="{{ asset('img/nocover.jpg') }}" href="">
+                                                <img class="simpleLens-big-image" alt="Product Title" src="{{ asset('img/nocover.jpg') }}">
+                                            </a>
                                         {% endif %}
-                                        </a>
+
                                     </div>
                                 </div>
                             </div>

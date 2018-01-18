@@ -4,8 +4,6 @@ imports:
     - { resource: services.yml }
     - { resource: "@LybraryBundle/Resources/config/services.yml" }
 
-# Put parameters here that don't need to change on each machine where the app is deployed
-# https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     locale: ru
     cover_directory: '%kernel.project_dir%/web/uploads/cover/'
@@ -21,13 +19,12 @@ services:
     my_cache:
         class: \Doctrine\Common\Cache\FilesystemCache
         arguments: ['%cache_dir%']
+
+
 framework:
     #esi: ~
-   # translator: { fallbacks: ['%locale%'] }
     translator:
         fallbacks: ['%locale%']
-       # paths:
-          #  - "%kernel.project_dir%/src/LybraryBundle/Resources/translations/"
     secret: '%secret%'
     router:
         resource: '%kernel.project_dir%/app/config/routing.yml'
@@ -57,7 +54,7 @@ twig:
 # Doctrine Configuration
 doctrine:
     dbal:
-        driver: pdo_mysql
+        driver: pdo_pgsql
         host: '%database_host%'
         port: '%database_port%'
         dbname: '%database_name%'

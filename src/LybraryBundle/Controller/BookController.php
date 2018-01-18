@@ -10,8 +10,6 @@ class BookController extends Controller
 {
     public function indexAction(Request $request)
     {
-        dump($languages = $request->getLanguages());
-        dump($request->getLocale());
         $cache = $this->get('my_cache');
         $cacheId = $this->getParameter('cache_books');
 

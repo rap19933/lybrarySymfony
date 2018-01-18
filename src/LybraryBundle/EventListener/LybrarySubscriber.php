@@ -26,19 +26,19 @@ class LybrarySubscriber implements EventSubscriber
         return array(
             'preRemove',
             'prePersist',
-            'preUpdate',
+            'preUpdate'
         );
     }
 
     public function preRemove(LifecycleEventArgs $args)
     {
         $entity = $args->getEntity();
-        if($entity instanceof Book) {
+        if ($entity instanceof Book) {
             if ($entity->getCover()) {
-                $this->fs->remove($this->coverDirectory.$entity->getCover());
+                $this->fs->remove($this->coverDirectory . $entity->getCover());
             }
             if ($entity->getBookFile()) {
-                $this->fs->remove($this->bookDirectory.$entity->getBookFile());
+                $this->fs->remove($this->bookDirectory . $entity->getBookFile());
             }
         }
     }
@@ -46,24 +46,18 @@ class LybrarySubscriber implements EventSubscriber
     public function prePersist(LifecycleEventArgs $args)
     {
         $entity = $args->getEntity();
-        if($entity instanceof Book) {
+        if ($entity instanceof Book) {
             $directory = date("Y/m/d/");
             $file = $entity->getCover();
             if ($file) {
-                $fileName = $directory.md5(uniqid()).'.'.$file->guessExtension();
-                $file->move(
-                    $this->coverDirectory.$directory,
-                    $fileName
-                );
+                $fileName = $directory . md5(uniqid()) . '.' . $file->guessExtension();
+                $file->move($this->coverDirectory . $directory, $fileName);
                 $entity->setCover($fileName);
             }
             $file = $entity->getBookFile();
             if ($file) {
-                $fileName = $directory.md5(uniqid()).'.'.$file->guessExtension();
-                $file->move(
-                    $this->bookDirectory.$directory,
-                    $fileName
-                );
+                $fileName = $directory . md5(uniqid()) . '.' . $file->guessExtension();
+                $file->move($this->bookDirectory . $directory, $fileName);
                 $entity->setBookFile($fileName);
             }
         }
@@ -74,54 +68,44 @@ class LybrarySubscriber implements EventSubscriber
         $request = Request::createFromGlobals();
         $entity = $args->getEntity();
 
-        if($entity instanceof Book) {
+        if ($entity instanceof Book) {
             $directory = date("Y/m/d/");
             $changes = $args->getEntityChangeSet();
-            if(!empty($changes["cover"])) {
-                //удалить обложку
-                if(!empty($request->query->get("img"))) {
+            if (!empty($changes["cover"])) {
+                if (!empty($request->query->get("img"))) {
+                    //удалить обложку
                     $this->fs->remove($this->coverDirectory.$changes["cover"][0]);
                     $entity->setCover(null);
-                }
-                // не обновлять обложку
-                elseif(!$changes["cover"][1]) {
+                } elseif (!$changes["cover"][1]) {
+                    //не обновлять обложку
                     $entity->setCover($changes["cover"][0]);
-                }
-                //добавить обложку
-                else {
-                    // обновить обложку
-                    if(!empty($changes["cover"][0])) {
+                } else {
+                    //добавить обложку
+                    if (!empty($changes["cover"][0])) {
+                        //удалить обложку старую
                         $this->fs->remove($this->coverDirectory.$changes["cover"][0]);
                     }
 
                     $file = $entity->getCover();
                     $fileName = $directory.md5(uniqid()).'.'.$file->guessExtension();
-                    $file->move(
-                        $this->coverDirectory.$directory,
-                        $fileName
-                    );
+                    $file->move($this->coverDirectory.$directory, $fileName);
                     $entity->setCover($fileName);
                 }
             }
 
-            if(!empty($changes["bookFile"])) {
-                if(!empty($request->query->get("book"))) {
+            if (!empty($changes["bookFile"])) {
+                if (!empty($request->query->get("book"))) {
                     $this->fs->remove($this->bookDirectory.$changes["bookFile"][0]);
                     $entity->setBookFile(null);
-                }
-                elseif(!$changes["bookFile"][1]) {
+                } elseif (!$changes["bookFile"][1]) {
                     $entity->setBookFile($changes["bookFile"][0]);
-                }
-                else {
-                    if(!empty($changes["bookFile"][0])) {
+                } else {
+                    if (!empty($changes["bookFile"][0])) {
                         $this->fs->remove($this->bookDirectory.$changes["bookFile"][0]);
                     }
                     $file = $entity->getBookFile();
                     $fileName = $directory.md5(uniqid()).'.'.$file->guessExtension();
-                    $file->move(
-                        $this->bookDirectory.$directory,
-                        $fileName
-                    );
+                    $file->move($this->bookDirectory.$directory, $fileName);
                     $entity->setBookFile($fileName);
                 }
             }

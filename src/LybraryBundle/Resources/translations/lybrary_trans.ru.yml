@@ -11,3 +11,8 @@ home: Главная
 my: Моя
 edit_books: Редактирование книги
 invalid_api_key: Неверный api ключ
+invalid_email: Неверный email
+add_book_ok: Книга успешно добавлена
+edit_book: Книга успешно изменена
+invalid_parameters: Введены не все параметры книги
+invalid_method: Не верный метод передачи

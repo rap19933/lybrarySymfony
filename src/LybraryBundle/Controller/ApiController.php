@@ -23,19 +23,19 @@ class ApiController extends Controller
                     'message' => $this->get('translator')->trans('invalid_api_key', array(), 'lybrary_trans')
                 )
             );
-        };
+        }
 
         $repository = $this->getDoctrine()->getManager();
         $books = $repository->getRepository('LybraryBundle:Book')->findBy(array(), array());
 
-        $siteUrl = ($request->isSecure() ? 'https://' : 'http://').$request->server->get('HTTP_HOST');
+        $siteUrl = ($request->isSecure() ? 'https://' : 'http://') . $request->server->get('HTTP_HOST');
 
         foreach ($books as $book) {
             if ($book->getCover()) {
-                $book->setCover($siteUrl.$this->getParameter('cover_directory_relative').$book->getCover());
+                $book->setCover($siteUrl . $this->getParameter('cover_directory_relative') . $book->getCover());
             }
             if ($book->getBookFile()) {
-                $book->setBookFile($siteUrl.$this->getParameter('book_directory_relative').$book->getBookFile());
+                $book->setBookFile($siteUrl . $this->getParameter('book_directory_relative').$book->getBookFile());
             }
         }
         $serializer = SerializerBuilder::create()
@@ -49,7 +49,6 @@ class ApiController extends Controller
     public function addAction(Request $request)
     {
         if ($request->getMethod() == 'POST') {
-
             if (!$this->checkApiKey($request)) {
                 return new JsonResponse(
                     array(
@@ -58,7 +57,7 @@ class ApiController extends Controller
                         'message' => $this->get('translator')->trans('invalid_api_key', array(), 'lybrary_trans')
                     )
                 );
-            };
+            }
 
             $requestData = $request->request->all();
 
@@ -67,9 +66,16 @@ class ApiController extends Controller
                 !empty($requestData['dateRead']) &&
                 !empty($requestData['email'])
             ) {
-                $user = $this->getDoctrine()->getRepository('LybraryBundle:User')->findOneBy(['email' => $requestData['email']]);
+                $repository = $this->getDoctrine()->getRepository('LybraryBundle:User');
+                $user = $repository->findOneBy(array('email' => $requestData['email']));
                 if (!$user) {
-                    return new JsonResponse(['success' => false, 'error' => 402, 'message' => 'Invalid email']);
+                    return new JsonResponse(
+                        array(
+                            'success' => false,
+                            'error' => 402,
+                            'message' => $this->get('translator')->trans('invalid_email', array(), 'lybrary_trans')
+                        )
+                    );
                 }
                 $book = new Book();
                 $book->setName($requestData['name']);
@@ -83,19 +89,36 @@ class ApiController extends Controller
                 $em->flush();
                 $this->deleteCache();
 
-                return new JsonResponse(['success' => true, 'error' => false, 'message' => 'Add book']);
+                return new JsonResponse(
+                    array(
+                        'success' => true,
+                        'error' => false,
+                        'message' => $this->get('translator')->trans('add_book_ok', array(), 'lybrary_trans')
+                    )
+                );
             } else {
-                return new JsonResponse(['success' => false, 'error' => 402, 'message' => 'Invalid parameters']);
+                return new JsonResponse(
+                    array(
+                        'success' => false,
+                        'error' => 402,
+                        'message' => $this->get('translator')->trans('invalid_parameters', array(), 'lybrary_trans')
+                    )
+                );
             }
         } else {
-            return new JsonResponse(['success' => false, 'error' => 405, 'message' => 'Invalid method']);
+            return new JsonResponse(
+                array(
+                    'success' => false,
+                    'error' => 405,
+                    'message' => $this->get('translator')->trans('invalid_method', array(), 'lybrary_trans')
+                )
+            );
         }
     }
 
     public function editAction(Request $request, Book $book)
     {
         if ($request->getMethod() == 'POST') {
-
             if (!$this->checkApiKey($request)) {
                 return new JsonResponse(
                     array(
@@ -104,7 +127,7 @@ class ApiController extends Controller
                         'message' => $this->get('translator')->trans('invalid_api_key', array(), 'lybrary_trans')
                     )
                 );
-            };
+            }
 
             $requestData = $request->request->all();
 
@@ -117,19 +140,28 @@ class ApiController extends Controller
             if (!empty($requestData['dateRead'])) {
                 $book->setDateRead(new \DateTime($requestData['dateRead']));
             }
-
             $book->setAllowDownload($requestData['allowDownload']);
-
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($book);
             $em->flush();
             $this->deleteCache();
 
-            return new JsonResponse(['success' => true, 'error' => false, 'message' => 'Edit book']);
-
+            return new JsonResponse(
+                array(
+                    'success' => true,
+                    'error' => false,
+                    'message' => $this->get('translator')->trans('edit_book', array(), 'lybrary_trans')
+                )
+            );
         } else {
-            return new JsonResponse(['success' => false, 'error' => 405, 'message' => 'Invalid method']);
+            return new JsonResponse(
+                array(
+                    'success' => false,
+                    'error' => 405,
+                    'message' => $this->get('translator')->trans('invalid_method', array(), 'lybrary_trans')
+                )
+            );
         }
     }
 

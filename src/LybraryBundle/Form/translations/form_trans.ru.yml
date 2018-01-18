@@ -1,2 +1,8 @@
-name_book: Название книги12
-
+name_book: Название книги
+author_book: Автор книги
+cover_book: Обложка книги
+file_book: Файл книги
+date_read: Дата прочтения
+allow_download: Разрешить скачивание
+error_cover: Выберете файл формата png или jpg
+error_file_book: Выберете файл менее 5 Мб
