@@ -12,13 +12,17 @@ class LybrarySubscriber implements EventSubscriber
 {
     private $coverDirectory;
     private $bookDirectory;
+    private $cacheBooksId;
     private $fs;
+    private $cacheBooksService;
 
-    public function __construct($coverDirectory, $bookDirectory)
+    public function __construct($coverDirectory, $bookDirectory, $cacheBooksId, $cacheBooksService)
     {
         $this->bookDirectory = $bookDirectory;
         $this->coverDirectory = $coverDirectory;
+        $this->cacheBooksId = $cacheBooksId;
         $this->fs = new Filesystem();
+        $this->cacheBooksService = $cacheBooksService;
     }
 
     public function getSubscribedEvents()
@@ -40,6 +44,7 @@ class LybrarySubscriber implements EventSubscriber
             if ($entity->getBookFile()) {
                 $this->fs->remove($this->bookDirectory . $entity->getBookFile());
             }
+            $this->deleteCache();
         }
     }
 
@@ -60,6 +65,7 @@ class LybrarySubscriber implements EventSubscriber
                 $file->move($this->bookDirectory . $directory, $fileName);
                 $entity->setBookFile($fileName);
             }
+            $this->deleteCache();
         }
     }
 
@@ -109,6 +115,11 @@ class LybrarySubscriber implements EventSubscriber
                     $entity->setBookFile($fileName);
                 }
             }
+            $this->deleteCache();
         }
+    }
+    public function deleteCache()
+    {
+        $this->cacheBooksService->delete($this->cacheBooksId);
     }
 }

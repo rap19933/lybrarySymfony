@@ -10,7 +10,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Book
  *
  * @ORM\Table(name="book")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="LybraryBundle\Repository\BookRepository")
  * @JMS\ExclusionPolicy("none")
  */
 class Book
@@ -44,6 +44,12 @@ class Book
      * @var string
      *
      * @ORM\Column(name="cover", type="string", length=255, nullable=true, unique=true)
+     * @Assert\Image(
+     *     mimeTypes={
+     *      "image/png",
+     *      "image/jpeg"
+     *     },
+     * )
      */
     private $cover;
 
@@ -51,6 +57,7 @@ class Book
      * @var string
      *
      * @ORM\Column(name="book_file", type="string", length=255, nullable=true, unique=true)
+     * @Assert\File(maxSize="5M")
      * @JMS\Exclude(if="!object.getAllowDownload()")
      */
     private $bookFile;
@@ -59,6 +66,7 @@ class Book
      * @var \DateTime
      *
      * @ORM\Column(name="date_read", type="datetime")
+     * @Assert\Type("\DateTime")
      * @JMS\Type("DateTime<'Y-m-d'>")
      */
     private $dateRead;

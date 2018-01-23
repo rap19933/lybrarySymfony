@@ -42,24 +42,24 @@
                                             <div class="product-icon">
                                                 {% if book.allowDownload and book.bookFile %}
                                                     <p class="rating-links">
-                                                        <a href="{{ asset('uploads/book/' ~book.bookFile) }}" target="_blank" download="">
+                                                        <a href="{{ asset(book_directory_relative ~book.bookFile) }}" target="_blank" download="">
                                                             <i class="fa fa-cloud-download"></i>
                                                             {{ 'download'|trans({}, 'lybrary_trans') }}
                                                         </a>
                                                     </p>
                                                 {% endif %}
                                                 {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-                                                    {% if book.user.id == app.user.id %}
-                                                        <a href="{{ path('book_edit', { 'id': book.id }) }}">
-                                                            {{ 'edit'|trans({}, 'lybrary_trans') }}
-                                                            <i class="fa fa-pencil-square-o"></i>
-                                                        </a>
 
-                                                        <a href="{{ path('book_delete', { 'id': book.id }) }}">
-                                                            {{ 'delete'|trans({}, 'lybrary_trans') }}
-                                                            <i class="fa fa-times"></i>
-                                                        </a>
-                                                    {% endif %}
+                                                    <a href="{{ path('book_edit', { 'id': book.id }) }}">
+                                                        {{ 'edit'|trans({}, 'lybrary_trans') }}
+                                                        <i class="fa fa-pencil-square-o"></i>
+                                                    </a>
+
+                                                    <a href="{{ path('book_delete', { 'id': book.id }) }}">
+                                                        {{ 'delete'|trans({}, 'lybrary_trans') }}
+                                                        <i class="fa fa-times"></i>
+                                                    </a>
+
                                                 {% endif %}
                                             </div>
                                         </div>

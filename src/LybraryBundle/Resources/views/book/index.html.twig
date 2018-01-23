@@ -43,11 +43,9 @@
                                                     <i class="fa fa-eye"></i>
                                                 </a>
                                                 {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-                                                    {% if book.user.id == app.user.id %}
-                                                        <a data-placement="top" data-toggle="tooltip" href="{{ path('book_edit', { 'id': book.id }) }}" data-original-title="{{ 'edit'|trans({}, 'lybrary_trans') }}">
-                                                            <i class="fa fa-pencil-square-o"></i>
-                                                        </a>
-                                                    {% endif %}
+                                                    <a data-placement="top" data-toggle="tooltip" href="{{ path('book_edit', { 'id': book.id }) }}" data-original-title="{{ 'edit'|trans({}, 'lybrary_trans') }}">
+                                                        <i class="fa fa-pencil-square-o"></i>
+                                                    </a>
                                                 {% endif %}
 
                                                 {% if book.allowDownload and book.bookFile %}

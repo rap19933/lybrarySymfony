@@ -11,3 +11,4 @@ dateRead_book: Введите дату прочтения
 allow_download: Можно скачать?
 id_book: Id книги
 api_email_add: Введите ваш email
+format_date: Год-Месяц-День

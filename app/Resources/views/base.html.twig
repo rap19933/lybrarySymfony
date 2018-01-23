@@ -65,7 +65,7 @@
                                     $(document).on("click", "#api_list", function() {
                                         var url = $("input[name='baseURL']").val();
                                         var apiKey = $("input[name='api_key']").val();
-                                        $.ajax({
+                                        $.ajax( {
                                             url: url+"/api/v1/books/?apiKey="+apiKey,
                                             dataType : "json",
                                             type: "GET",
@@ -82,13 +82,12 @@
                                             if (typeof(obj[k]) == "object"){
                                                 strProperty = "";
                                                 $.each(obj[k], function(i, val) {
-                                                    strProperty += '<b>'+i+'</b>: '+val+' ';
+                                                    strProperty += '<b>' + i + '</b>: ' + val + ' ';
                                                 });
-                                                resultObj += '<p><h6>'+k+"</h6>"+strProperty+'</p></br>';
+                                                resultObj += '<p><h6>' + k + '</h6>' + strProperty + '</p></br>';
 
                                             } else {
-                                                resultError += k+": "+ obj[k]+"\r\n";
-
+                                                resultError += k + ": " + obj[k] + "\r\n";
                                             }
                                         }
                                         if(resultError != ""){
@@ -119,7 +118,7 @@
                                         </li>
                                         <li>
                                             {{ 'dateRead_book'|trans({}, 'base_trans') }}
-                                            <input type="date" value="" name="dateRead_book_add">
+                                            <input type="text" value="" name="dateRead_book_add" placeholder="{{ 'format_date'|trans({}, 'base_trans') }}">
                                         </li>
                                         <li><label for="coding">{{ 'allow_download'|trans({}, 'base_trans') }}</label>
                                             <input type="checkbox" value="1" name="allowDownload_book_add" checked>
@@ -135,8 +134,7 @@
                                             url: $("input[name='baseURL']").val()+"/api/v1/books/add/",
                                             dataType : "json",
                                             type: "POST",
-                                            data:
-                                                {
+                                            data:  {
                                                     apiKey: $("input[name='api_key_add']").val(),
                                                     email: $("input[name='api_email_add']").val(),
                                                     name: $("input[name='name_book_add']").val(),
@@ -169,7 +167,7 @@
                                         </li>
                                         <li>
                                             {{ 'dateRead_book'|trans({}, 'base_trans') }}
-                                            <input type="date" value="" name="dateRead_book_edit">
+                                            <input type="text" value="" name="dateRead_book_edit" placeholder="{{ 'format_date'|trans({}, 'base_trans') }}">
                                         </li>
                                         <li><label for="coding">{{ 'allow_download'|trans({}, 'base_trans') }}</label>
                                             <input type="checkbox" value="1" name="allowDownload_book_edit" checked>
@@ -182,17 +180,30 @@
                                 <script>
                                     $(document).on("click", ".edit_books_api", function() {
                                         $.ajax({
-                                            url: $("input[name='baseURL']").val()+"/api/v1/books/"+$("input[name='api_id_edit']").val()+"/edit",
+                                            url: $("input[name='baseURL']").val() +
+                                                "/api/v1/books/" +
+                                                $("input[name='api_id_edit']").val() +
+                                                "/edit",
                                             dataType : "json",
                                             type: "POST",
-                                            data:
-                                                {
+                                            data: {
                                                     apiKey: $("input[name='api_key_edit']").val(),
                                                     name: $("input[name='name_book_edit']").val(),
                                                     author: $("input[name='author_book_edit']").val(),
                                                     dateRead: $("input[name='dateRead_book_edit']").val(),
                                                     allowDownload: $("input[name='allowDownload_book_edit']").prop('checked')
                                                 },
+                                            statusCode: {
+                                                404: function() {
+                                                    alert("Oops! An Error Occurred\n" +
+                                                        "The server returned a \"404 Not Found\".");
+                                                },
+                                                500: function() {
+                                                    alert("Oops! An Error Occurred\n" +
+                                                        "The server returned a \"500 Internal Server Error\".");
+                                                },
+
+                                            },
                                             success: function (data) {
                                                 alertObj(data);
                                             }

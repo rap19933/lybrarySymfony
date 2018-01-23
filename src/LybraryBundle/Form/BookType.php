@@ -7,7 +7,6 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Translation\Loader\YamlFileLoader;
 use Symfony\Component\Translation\Translator;
@@ -39,14 +38,6 @@ class BookType extends AbstractType
                     'label' => $this->translator->trans('cover_book'),
                     'data_class' => null,
                     'required' => false,
-                    'constraints' => array(
-                        new File(
-                            array(
-                                'mimeTypes' => array('image/png', 'image/jpeg'),
-                                'mimeTypesMessage' => $this->translator->trans('error_cover')
-                            )
-                        )
-                    ),
                     'attr' => ['class' => 'btn btn-primary', 'style' => 'width: 100%; margin-bottom: 20px']
                     )
             )
@@ -57,14 +48,6 @@ class BookType extends AbstractType
                     'label' => $this->translator->trans('file_book'),
                     'data_class' => null,
                     'required' => false,
-                    'constraints' => array(
-                        new File(
-                            array(
-                                'maxSize' => '5M',
-                                'maxSizeMessage' => $this->translator->trans('error_file_book')
-                            )
-                        )
-                    ),
                     'attr' => ['class' => 'btn btn-primary', 'style' => 'width: 100%; margin-bottom: 20px']
                     )
             )

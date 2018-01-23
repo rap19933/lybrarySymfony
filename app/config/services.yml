@@ -1,6 +1,3 @@
-parameters:
-    #parameter_name: value
-
 services:
     # default configuration for services in *this* file
     _defaults:
@@ -14,16 +11,27 @@ services:
 
     #twig extensions
     lybrary.twig.twig_extension:
-            class: LybraryBundle\Twig\LybraryExtension
-            tags:
-                - { name: twig.extension }
+        class: LybraryBundle\Twig\LybraryExtension
+        tags:
+            - { name: twig.extension }
 
     lybrary.listener:
         class: LybraryBundle\EventListener\LybrarySubscriber
         tags:
             - { name: doctrine.event_subscriber, connection: default }
-        arguments:  ['%cover_directory%', '%book_directory%']
+        arguments:
+            - '%cover_directory%'
+            - '%book_directory%'
+            - '%cache_books_id%'
+            - '@cache_books_service'
 
-    lybrary.my_trans:
+    lybrary.form_trans:
         class: LybraryBundle\Form\BookType
-        arguments:  ['%locale%']
+        arguments:
+            - '%locale%'
+
+    cache_books_service:
+        class: Doctrine\Common\Cache\FilesystemCache
+        arguments:
+            - '%cache_dir%'
+        public: true

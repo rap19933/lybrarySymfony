@@ -10,13 +10,11 @@ class BookController extends Controller
 {
     public function indexAction(Request $request)
     {
-        $cache = $this->get('my_cache');
-        $cacheId = $this->getParameter('cache_books');
+        $cache = $this->get('cache_books_service');
+        $cacheId = $this->getParameter('cache_books_id');
 
         if (!$cache->contains($cacheId)) {
-            $repository = $this->getDoctrine()->getManager();
-            $books = $repository->getRepository('LybraryBundle:Book')
-                ->findBy(array(), array("dateRead" => "DESC"));
+            $books = $this->getDoctrine()->getRepository(Book::class)->getBooks();
             $cache->save($cacheId, $books, $this->getParameter('cache_ttl'));
         } else {
             $books = $cache->fetch($cacheId);
@@ -43,7 +41,6 @@ class BookController extends Controller
             $em = $this->getDoctrine()->getManager();
             $em->persist($book);
             $em->flush();
-            $this->deleteCache();
             return $this->redirectToRoute('book_show', array('id' => $book->getId()));
         }
 
@@ -60,23 +57,14 @@ class BookController extends Controller
             'LybraryBundle:book:show.html.twig',
             array(
                 'cover_directory_relative' => $this->getParameter('cover_directory_relative'),
+                'book_directory_relative' => $this->getParameter('book_directory_relative'),
                 'book' => $book
             )
         );
     }
+
     public function editAction(Request $request, Book $book)
     {
-        if ($this->getUser()->getId() !== $book->getUser()->getId()) {
-            return $this->render(
-                'FOSUserBundle:Security:login.html.twig',
-                array(
-                    'last_username' => '',
-                    'error' => '',
-                    'csrf_token' => ''
-                )
-            );
-        }
-
         $deleteForm = $this->createDeleteForm($book);
         $editForm = $this->createForm('LybraryBundle\Form\BookType', $book);
 
@@ -84,7 +72,6 @@ class BookController extends Controller
 
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             $this->getDoctrine()->getManager()->flush();
-            $this->deleteCache();
             return $this->redirectToRoute('book_edit', array('id' => $book->getId()));
         }
 
@@ -100,21 +87,9 @@ class BookController extends Controller
 
     public function deleteAction(Book $book)
     {
-        if ($this->getUser()->getId() !== $book->getUser()->getId()) {
-            return $this->render(
-                'FOSUserBundle:Security:login.html.twig',
-                array(
-                    'last_username' => '',
-                    'error' => '',
-                    'csrf_token' => ''
-                )
-            );
-        }
-
         $em = $this->getDoctrine()->getManager();
         $em->remove($book);
         $em->flush();
-        $this->deleteCache();
 
         return $this->redirectToRoute('book_index');
     }
@@ -125,9 +100,5 @@ class BookController extends Controller
             ->setAction($this->generateUrl('book_delete', array('id' => $book->getId())))
             ->setMethod('DELETE')
             ->getForm();
-    }
-    public function deleteCache()
-    {
-        $this->get('my_cache')->delete($this->getParameter('cache_books'));
     }
 }

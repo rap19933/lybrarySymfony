@@ -2,7 +2,7 @@ imports:
     - { resource: parameters.yml }
     - { resource: security.yml }
     - { resource: services.yml }
-    - { resource: "@LybraryBundle/Resources/config/services.yml" }
+    #- { resource: "@LybraryBundle/Resources/config/services.yml" }
 
 parameters:
     locale: ru
@@ -11,15 +11,9 @@ parameters:
     cover_directory_relative: '/uploads/cover/'
     book_directory_relative: '/uploads/book/'
     cache_ttl: 86400
-    cache_books: cache_books
+    cache_books_id: cache_books_id
     cache_dir: '%kernel.project_dir%/web/uploads/cache/'
     apiKey: '%secret%'
-
-services:
-    my_cache:
-        class: \Doctrine\Common\Cache\FilesystemCache
-        arguments: ['%cache_dir%']
-
 
 framework:
     #esi: ~

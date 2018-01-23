@@ -1,11 +1,12 @@
 {% use "form_div_layout.html.twig" %}
 
 {% block file_widget %}
+   {# {{ dump() }}#}
     <div class="col-md-10">
-        {% if data and (name == "cover" or name == "bookFile") %}
+        {% if data and form.parent.vars.value.id and (name == "cover" or name == "bookFile") %}
             <div class="buttons-file-del" >
                 <input id="delete_img" formaction="{{ path('book_edit', { 'id': form.parent.vars.value.id }) }}?{% if name == "cover" %}img{% else %}book{% endif %}=y"
-                       class="btn btn-primary" type="submit" value="Удалить" style="width: 20%; margin-bottom: 0px">
+                       class="btn btn-primary" type="submit" value="Удалить" style="width: 20%; margin-bottom: 0px"/>
             </div>
             <div class="pull-right">
                 <input type="{{ type }}" {{ block('widget_attributes') }}/>
