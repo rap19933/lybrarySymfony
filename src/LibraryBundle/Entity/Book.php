@@ -1,6 +1,6 @@
 <?php
 
-namespace LybraryBundle\Entity;
+namespace LibraryBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
@@ -10,7 +10,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Book
  *
  * @ORM\Table(name="book")
- * @ORM\Entity(repositoryClass="LybraryBundle\Repository\BookRepository")
+ * @ORM\Entity(repositoryClass="LibraryBundle\Repository\BookRepository")
  * @JMS\ExclusionPolicy("none")
  */
 class Book
@@ -80,7 +80,7 @@ class Book
     private $allowDownload;
 
     /**
-     * @ORM\ManyToOne(targetEntity="LybraryBundle\Entity\User", inversedBy="book")
+     * @ORM\ManyToOne(targetEntity="LibraryBundle\Entity\User", inversedBy="book")
      * @JMS\Exclude
      */
     private $user;
@@ -242,11 +242,11 @@ class Book
     /**
      * Set user
      *
-     * @param \LybraryBundle\Entity\User $user
+     * @param \LibraryBundle\Entity\User $user
      *
      * @return Book
      */
-    public function setUser(\LybraryBundle\Entity\User $user = null)
+    public function setUser(\LibraryBundle\Entity\User $user = null)
     {
         $this->user = $user;
 
@@ -256,7 +256,7 @@ class Book
     /**
      * Get user
      *
-     * @return \LybraryBundle\Entity\User
+     * @return \LibraryBundle\Entity\User
      */
     public function getUser()
     {

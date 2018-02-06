@@ -1,8 +1,8 @@
 <?php
 
-namespace LybraryBundle\Twig;
+namespace LibraryBundle\Twig;
 
-class LybraryExtension extends \Twig_Extension
+class LibraryExtension extends \Twig_Extension
 {
     public function getFunctions()
     {

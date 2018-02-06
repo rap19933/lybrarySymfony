@@ -1,5 +1,5 @@
 {% extends '::base.html.twig' %}
-{% block title %}{{ 'home'|trans({}, 'lybrary_trans') }}{% endblock %}
+{% block title %}{{ 'home'|trans({}, 'library_trans') }}{% endblock %}
 
 {% block body %}
     <section class="pages products-page section-padding-top">
@@ -18,7 +18,7 @@
                                                 {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
                                                     {% if book.user.id == app.user.id %}
                                                         <div class="pro-type">
-                                                            <span>{{ 'my'|trans({}, 'lybrary_trans') }}</span>
+                                                            <span>{{ 'my'|trans({}, 'library_trans') }}</span>
                                                         </div>
                                                     {% endif %}
                                                 {% endif %}
@@ -31,25 +31,25 @@
 
                                             <div class="product-dsc">
                                                 <h3>
-                                                    <a href="{{ path('book_show', { 'id': book.id }) }}">{{ 'name_book'|trans({}, 'lybrary_trans') }} {{ book.name }}</a>
+                                                    <a href="{{ path('book_show', { 'id': book.id }) }}">{{ 'name_book'|trans({}, 'library_trans') }} {{ book.name }}</a>
                                                 </h3>
                                                 <div class="star-price">
-                                                    <span class="price-left">{{ 'author'|trans({}, 'lybrary_trans') }} {{ book.author }}</span>
+                                                    <span class="price-left">{{ 'author'|trans({}, 'library_trans') }} {{ book.author }}</span>
                                                 </div>
                                             </div>
 
                                             <div class="actions-btn">
-                                                <a href="{{ path('book_show', { 'id': book.id }) }}" data-original-title="{{ 'view_books'|trans({}, 'lybrary_trans') }}">
+                                                <a href="{{ path('book_show', { 'id': book.id }) }}" data-original-title="{{ 'view_books'|trans({}, 'library_trans') }}">
                                                     <i class="fa fa-eye"></i>
                                                 </a>
                                                 {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-                                                    <a data-placement="top" data-toggle="tooltip" href="{{ path('book_edit', { 'id': book.id }) }}" data-original-title="{{ 'edit'|trans({}, 'lybrary_trans') }}">
+                                                    <a data-placement="top" data-toggle="tooltip" href="{{ path('book_edit', { 'id': book.id }) }}" data-original-title="{{ 'edit'|trans({}, 'library_trans') }}">
                                                         <i class="fa fa-pencil-square-o"></i>
                                                     </a>
                                                 {% endif %}
 
                                                 {% if book.allowDownload and book.bookFile %}
-                                                    <a href="{{ asset(book_directory_relative ~book.bookFile) }}" target="_blank" download="" data-original-title="{{ 'download'|trans({}, 'lybrary_trans') }}"><i class="fa fa-cloud-download"></i></a>
+                                                    <a href="{{ asset(book_directory_relative ~book.bookFile) }}" target="_blank" download="" data-original-title="{{ 'download'|trans({}, 'library_trans') }}"><i class="fa fa-cloud-download"></i></a>
                                                 {% endif %}
                                             </div>
                                         </div>

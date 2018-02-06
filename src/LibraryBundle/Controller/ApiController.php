@@ -1,12 +1,12 @@
 <?php
 
-namespace LybraryBundle\Controller;
+namespace LibraryBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use LybraryBundle\Entity\Book;
+use LibraryBundle\Entity\Book;
 use JMS\Serializer\Expression\ExpressionEvaluator;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 use JMS\Serializer\SerializerBuilder;
@@ -22,7 +22,7 @@ class ApiController extends Controller
                 array(
                     'success' => false,
                     'error' => 401,
-                    'message' => $this->get('translator')->trans('invalid_api_key', array(), 'lybrary_trans')
+                    'message' => $this->get('translator')->trans('invalid_api_key', array(), 'library_trans')
                 )
             );
         }
@@ -62,7 +62,7 @@ class ApiController extends Controller
                 array(
                     'success' => false,
                     'error' => 401,
-                    'message' => $this->get('translator')->trans('invalid_api_key', array(), 'lybrary_trans')
+                    'message' => $this->get('translator')->trans('invalid_api_key', array(), 'library_trans')
                 )
             );
         }
@@ -88,14 +88,14 @@ class ApiController extends Controller
         }
 
         if (!empty($requestData['name']) && !empty($requestData['author'])) {
-            $repository = $this->getDoctrine()->getRepository('LybraryBundle:User');
+            $repository = $this->getDoctrine()->getRepository('LibraryBundle:User');
             $user = $repository->findOneBy(array('email' => $requestData['email']));
             if (!$user) {
                 return new JsonResponse(
                     array(
                         'success' => false,
                         'error' => 402,
-                        'message' => $this->get('translator')->trans('invalid_email', array(), 'lybrary_trans')
+                        'message' => $this->get('translator')->trans('invalid_email', array(), 'library_trans')
                     )
                 );
             }
@@ -115,7 +115,7 @@ class ApiController extends Controller
                 array(
                     'success' => true,
                     'error' => false,
-                    'message' => $this->get('translator')->trans('add_book_ok', array(), 'lybrary_trans')
+                    'message' => $this->get('translator')->trans('add_book_ok', array(), 'library_trans')
                 )
             );
         } else {
@@ -123,7 +123,7 @@ class ApiController extends Controller
                 array(
                     'success' => false,
                     'error' => 402,
-                    'message' => $this->get('translator')->trans('invalid_parameters', array(), 'lybrary_trans')
+                    'message' => $this->get('translator')->trans('invalid_parameters', array(), 'library_trans')
                 )
             );
         }
@@ -136,7 +136,7 @@ class ApiController extends Controller
                 array(
                     'success' => false,
                     'error' => 401,
-                    'message' => $this->get('translator')->trans('invalid_api_key', array(), 'lybrary_trans')
+                    'message' => $this->get('translator')->trans('invalid_api_key', array(), 'library_trans')
                 )
             );
         }
@@ -173,7 +173,7 @@ class ApiController extends Controller
             array(
                 'success' => true,
                 'error' => false,
-                'message' => $this->get('translator')->trans('edit_book', array(), 'lybrary_trans')
+                'message' => $this->get('translator')->trans('edit_book', array(), 'library_trans')
             )
         );
     }

@@ -1,0 +1,3 @@
+library_book:
+    resource: "@LibraryBundle/Resources/config/routing/book.yml"
+    prefix:   /

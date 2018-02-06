@@ -1,45 +1,45 @@
 book_index:
     path:     /
-    defaults: { _controller: "LybraryBundle:Book:index" }
+    defaults: { _controller: "LibraryBundle:Book:index" }
     methods:  GET
 
 book_show:
     path:     /{id}/show
-    defaults: { _controller: "LybraryBundle:Book:show" }
+    defaults: { _controller: "LibraryBundle:Book:show" }
     methods:  GET
 
 book_new:
     path:     /new
-    defaults: { _controller: "LybraryBundle:Book:new" }
+    defaults: { _controller: "LibraryBundle:Book:new" }
     methods:  [GET, POST]
 
 book_edit:
     path:     /{id}/edit
-    defaults: { _controller: "LybraryBundle:Book:edit" }
+    defaults: { _controller: "LibraryBundle:Book:edit" }
     methods:  [GET, POST]
     requirements:
         id: \d+
 
 book_delete:
     path:     /{id}/delete
-    defaults: { _controller: "LybraryBundle:Book:delete" }
+    defaults: { _controller: "LibraryBundle:Book:delete" }
     methods:  [GET, DELETE]
     requirements:
         id: \d+
 
 book_index_api:
     path:     /api/v1/books/
-    defaults: { _controller: "LybraryBundle:Api:index", _format: "json" }
+    defaults: { _controller: "LibraryBundle:Api:index", _format: "json" }
     methods:  GET
 
 book_add_api:
     path:     /api/v1/books/add/
-    defaults: { _controller: "LybraryBundle:Api:add", _format: "json" }
+    defaults: { _controller: "LibraryBundle:Api:add", _format: "json" }
     methods:  POST
 
 book_edit_api:
     path:     /api/v1/books/{id}/edit
-    defaults: { _controller: "LybraryBundle:Api:edit", _format: "json" }
+    defaults: { _controller: "LibraryBundle:Api:edit", _format: "json" }
     methods:  POST
     requirements:
         id: \d+

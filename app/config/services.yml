@@ -10,13 +10,13 @@ services:
         public: false
 
     #twig extensions
-    lybrary.twig.twig_extension:
-        class: LybraryBundle\Twig\LybraryExtension
+    library.twig.twig_extension:
+        class: LibraryBundle\Twig\LibraryExtension
         tags:
             - { name: twig.extension }
 
-    lybrary.listener:
-        class: LybraryBundle\EventListener\LybrarySubscriber
+    library.listener:
+        class: LibraryBundle\EventListener\LibrarySubscriber
         tags:
             - { name: doctrine.event_subscriber, connection: default }
         arguments:
@@ -25,8 +25,8 @@ services:
             - '%cache_books_id%'
             - '@cache_books_service'
 
-    lybrary.form_trans:
-        class: LybraryBundle\Form\BookType
+    library.form_trans:
+        class: LibraryBundle\Form\BookType
         arguments:
             - '%locale%'
 

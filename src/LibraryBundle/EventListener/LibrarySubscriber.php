@@ -1,14 +1,14 @@
 <?php
 
-namespace LybraryBundle\EventListener;
+namespace LibraryBundle\EventListener;
 
 use Doctrine\Common\EventSubscriber;
 use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
-use LybraryBundle\Entity\Book;
+use LibraryBundle\Entity\Book;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Filesystem\Filesystem;
 
-class LybrarySubscriber implements EventSubscriber
+class LibrarySubscriber implements EventSubscriber
 {
     private $coverDirectory;
     private $bookDirectory;

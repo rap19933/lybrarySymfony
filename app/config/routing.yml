@@ -1,5 +1,5 @@
-lybrary:
-    resource: "@LybraryBundle/Resources/config/routing.yml"
+library:
+    resource: "@LibraryBundle/Resources/config/routing.yml"
     prefix:   /
 
 fos_user_security:

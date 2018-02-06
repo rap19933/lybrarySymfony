@@ -1,12 +1,12 @@
 {% extends 'base.html.twig' %}
-{% block title %}{{ 'view_books'|trans({}, 'lybrary_trans') }}{% endblock %}
+{% block title %}{{ 'view_books'|trans({}, 'library_trans') }}{% endblock %}
 
 {% block body %}
 
     <section class="single-product-area sit">
         <div class="container">
             <div class="row">
-                <h1>{{ 'view_books'|trans({}, 'lybrary_trans') }}</h1>
+                <h1>{{ 'view_books'|trans({}, 'library_trans') }}</h1>
                 <div class="col-md-12">
                     <div class="row">
                         <div class="col-md-6 col-sm-6 none-si-pro">
@@ -31,10 +31,10 @@
                         <div class="col-md-6 col-sm-6">
                             <div class="cras">
                                 <div class="product-name">
-                                    <h2>{{ 'name_book'|trans({}, 'lybrary_trans') }} {{ book.name }}</h2>
+                                    <h2>{{ 'name_book'|trans({}, 'library_trans') }} {{ book.name }}</h2>
                                 </div>
                                 <div class="pre-box">
-                                    <span class="special-price">{{ 'author'|trans({}, 'lybrary_trans') }} {{ book.author }}</span>
+                                    <span class="special-price">{{ 'author'|trans({}, 'library_trans') }} {{ book.author }}</span>
                                 </div>
                                 <div class="add-to-box1">
                                     <div class="add-to-box add-to-box2">
@@ -44,19 +44,19 @@
                                                     <p class="rating-links">
                                                         <a href="{{ asset(book_directory_relative ~book.bookFile) }}" target="_blank" download="">
                                                             <i class="fa fa-cloud-download"></i>
-                                                            {{ 'download'|trans({}, 'lybrary_trans') }}
+                                                            {{ 'download'|trans({}, 'library_trans') }}
                                                         </a>
                                                     </p>
                                                 {% endif %}
                                                 {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
 
                                                     <a href="{{ path('book_edit', { 'id': book.id }) }}">
-                                                        {{ 'edit'|trans({}, 'lybrary_trans') }}
+                                                        {{ 'edit'|trans({}, 'library_trans') }}
                                                         <i class="fa fa-pencil-square-o"></i>
                                                     </a>
 
                                                     <a href="{{ path('book_delete', { 'id': book.id }) }}">
-                                                        {{ 'delete'|trans({}, 'lybrary_trans') }}
+                                                        {{ 'delete'|trans({}, 'library_trans') }}
                                                         <i class="fa fa-times"></i>
                                                     </a>
 
