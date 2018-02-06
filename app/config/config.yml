@@ -2,7 +2,7 @@ imports:
     - { resource: parameters.yml }
     - { resource: security.yml }
     - { resource: services.yml }
-    #- { resource: "@LibraryBundle/Resources/config/services.yml" }
+    - { resource: "@LibraryBundle/Resources/config/services.yml" }
 
 parameters:
     locale: ru

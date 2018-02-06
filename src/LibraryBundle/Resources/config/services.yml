@@ -1,0 +1,7 @@
+services:
+    library.request.listener:
+        class: LibraryBundle\EventListener\RequestSubscriber
+        arguments:
+            - '%secret%'
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }

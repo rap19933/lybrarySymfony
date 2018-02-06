@@ -17,16 +17,6 @@ class ApiController extends Controller
 {
     public function indexAction(Request $request)
     {
-        if (!$this->checkApiKey($request)) {
-            return new JsonResponse(
-                array(
-                    'success' => false,
-                    'error' => 401,
-                    'message' => $this->get('translator')->trans('invalid_api_key')
-                )
-            );
-        }
-
         $cache = $this->get('cache_books_service');
         $cacheId = $this->getParameter('cache_books_id');
 
@@ -44,7 +34,9 @@ class ApiController extends Controller
                 $book->setCover($siteUrl . $this->getParameter('cover_directory_relative') . $book->getCover());
             }
             if ($book->getBookFile()) {
-                $book->setBookFile($siteUrl . $this->getParameter('book_directory_relative') . $book->getBookFile());
+                $book->setBookFile(
+                    $siteUrl . $this->getParameter('book_directory_relative') . $book->getBookFile()
+                );
             }
         }
         $serializer = SerializerBuilder::create()
@@ -57,16 +49,6 @@ class ApiController extends Controller
 
     public function addAction(Request $request)
     {
-        if (!$this->checkApiKey($request)) {
-            return new JsonResponse(
-                array(
-                    'success' => false,
-                    'error' => 401,
-                    'message' => $this->get('translator')->trans('invalid_api_key')
-                )
-            );
-        }
-
         $requestData = $request->request->all();
         $this->trimData($requestData);
 
@@ -131,16 +113,6 @@ class ApiController extends Controller
 
     public function editAction(Request $request, Book $book)
     {
-        if (!$this->checkApiKey($request)) {
-            return new JsonResponse(
-                array(
-                    'success' => false,
-                    'error' => 401,
-                    'message' => $this->get('translator')->trans('invalid_api_key')
-                )
-            );
-        }
-
         $requestData = $request->request->all();
         $this->trimData($requestData);
 
@@ -176,11 +148,6 @@ class ApiController extends Controller
                 'message' => $this->get('translator')->trans('edit_book')
             )
         );
-    }
-
-    private function checkApiKey($request)
-    {
-        return $request->get("apiKey") == $this->getParameter('apiKey');
     }
 
     private function trimData(&$data)
