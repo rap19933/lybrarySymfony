@@ -22,7 +22,7 @@ class ApiController extends Controller
                 array(
                     'success' => false,
                     'error' => 401,
-                    'message' => $this->get('translator')->trans('invalid_api_key', array(), 'library_trans')
+                    'message' => $this->get('translator')->trans('invalid_api_key')
                 )
             );
         }
@@ -41,10 +41,10 @@ class ApiController extends Controller
 
         foreach ($books as $book) {
             if ($book->getCover()) {
-                $book->setCover($siteUrl.$this->getParameter('cover_directory_relative').$book->getCover());
+                $book->setCover($siteUrl . $this->getParameter('cover_directory_relative') . $book->getCover());
             }
             if ($book->getBookFile()) {
-                $book->setBookFile($siteUrl.$this->getParameter('book_directory_relative').$book->getBookFile());
+                $book->setBookFile($siteUrl . $this->getParameter('book_directory_relative') . $book->getBookFile());
             }
         }
         $serializer = SerializerBuilder::create()
@@ -62,7 +62,7 @@ class ApiController extends Controller
                 array(
                     'success' => false,
                     'error' => 401,
-                    'message' => $this->get('translator')->trans('invalid_api_key', array(), 'library_trans')
+                    'message' => $this->get('translator')->trans('invalid_api_key')
                 )
             );
         }
@@ -95,7 +95,7 @@ class ApiController extends Controller
                     array(
                         'success' => false,
                         'error' => 402,
-                        'message' => $this->get('translator')->trans('invalid_email', array(), 'library_trans')
+                        'message' => $this->get('translator')->trans('invalid_email')
                     )
                 );
             }
@@ -115,7 +115,7 @@ class ApiController extends Controller
                 array(
                     'success' => true,
                     'error' => false,
-                    'message' => $this->get('translator')->trans('add_book_ok', array(), 'library_trans')
+                    'message' => $this->get('translator')->trans('add_book_ok')
                 )
             );
         } else {
@@ -123,7 +123,7 @@ class ApiController extends Controller
                 array(
                     'success' => false,
                     'error' => 402,
-                    'message' => $this->get('translator')->trans('invalid_parameters', array(), 'library_trans')
+                    'message' => $this->get('translator')->trans('invalid_parameters')
                 )
             );
         }
@@ -136,7 +136,7 @@ class ApiController extends Controller
                 array(
                     'success' => false,
                     'error' => 401,
-                    'message' => $this->get('translator')->trans('invalid_api_key', array(), 'library_trans')
+                    'message' => $this->get('translator')->trans('invalid_api_key')
                 )
             );
         }
@@ -173,7 +173,7 @@ class ApiController extends Controller
             array(
                 'success' => true,
                 'error' => false,
-                'message' => $this->get('translator')->trans('edit_book', array(), 'library_trans')
+                'message' => $this->get('translator')->trans('edit_book')
             )
         );
     }

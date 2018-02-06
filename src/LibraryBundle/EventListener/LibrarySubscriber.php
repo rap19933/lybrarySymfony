@@ -80,7 +80,7 @@ class LibrarySubscriber implements EventSubscriber
             if (!empty($changes["cover"])) {
                 if (!empty($request->query->get("img"))) {
                     //удалить обложку
-                    $this->fs->remove($this->coverDirectory.$changes["cover"][0]);
+                    $this->fs->remove($this->coverDirectory . $changes["cover"][0]);
                     $entity->setCover(null);
                 } elseif (!$changes["cover"][1]) {
                     //не обновлять обложку
@@ -89,29 +89,29 @@ class LibrarySubscriber implements EventSubscriber
                     //добавить обложку
                     if (!empty($changes["cover"][0])) {
                         //удалить обложку старую
-                        $this->fs->remove($this->coverDirectory.$changes["cover"][0]);
+                        $this->fs->remove($this->coverDirectory . $changes["cover"][0]);
                     }
 
                     $file = $entity->getCover();
-                    $fileName = $directory.md5(uniqid()).'.'.$file->guessExtension();
-                    $file->move($this->coverDirectory.$directory, $fileName);
+                    $fileName = $directory . md5(uniqid()) . '.' . $file->guessExtension();
+                    $file->move($this->coverDirectory . $directory, $fileName);
                     $entity->setCover($fileName);
                 }
             }
 
             if (!empty($changes["bookFile"])) {
                 if (!empty($request->query->get("book"))) {
-                    $this->fs->remove($this->bookDirectory.$changes["bookFile"][0]);
+                    $this->fs->remove($this->bookDirectory . $changes["bookFile"][0]);
                     $entity->setBookFile(null);
                 } elseif (!$changes["bookFile"][1]) {
                     $entity->setBookFile($changes["bookFile"][0]);
                 } else {
                     if (!empty($changes["bookFile"][0])) {
-                        $this->fs->remove($this->bookDirectory.$changes["bookFile"][0]);
+                        $this->fs->remove($this->bookDirectory . $changes["bookFile"][0]);
                     }
                     $file = $entity->getBookFile();
-                    $fileName = $directory.md5(uniqid()).'.'.$file->guessExtension();
-                    $file->move($this->bookDirectory.$directory, $fileName);
+                    $fileName = $directory.md5(uniqid()) . '.' . $file->guessExtension();
+                    $file->move($this->bookDirectory . $directory, $fileName);
                     $entity->setBookFile($fileName);
                 }
             }
