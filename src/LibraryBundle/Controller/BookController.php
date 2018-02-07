@@ -10,15 +10,16 @@ class BookController extends Controller
 {
     public function indexAction(Request $request)
     {
-        $cache = $this->get('cache_books_service');
-        $cacheId = $this->getParameter('cache_books_id');
+        $countBook = $this->getParameter('count_book');
+        $cacheTTL = $this->getParameter('cache_ttl');
+        $books = $this->getDoctrine()->getRepository(Book::class)->getBooks($countBook, $cacheTTL);
 
-        if (!$cache->contains($cacheId)) {
+        /*if ($cache->contains($cacheId)) {
             $books = $this->getDoctrine()->getRepository(Book::class)->getBooks();
             $cache->save($cacheId, $books, $this->getParameter('cache_ttl'));
         } else {
             $books = $cache->fetch($cacheId);
-        }
+        }*/
 
         return $this->render(
             'LibraryBundle:book:index.html.twig',
