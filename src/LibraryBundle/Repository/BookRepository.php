@@ -6,15 +6,15 @@ use Doctrine\ORM\EntityRepository;
 
 class BookRepository extends EntityRepository
 {
-    public function getBooks($countBook, $cacheTTL)
+    public function getBooks($page, $limit, $cacheTTL, $knpPaginator)
     {
-        $qb = $this->createQueryBuilder('book')
+        $query = $this->createQueryBuilder('book')
             ->orderBy('book.dateRead', 'DESC')
             ->getQuery()
-            ->useResultCache(true, $cacheTTL, 'id');
-        /*$result = $qb->getResult();
-        dump($qb->execute());
-        dump($qb->getResult());*/
-        return $qb->getResult();
+            ->useResultCache(true, $cacheTTL, "cache_id_{$page}_{$limit}");
+
+        $pagination = $knpPaginator->paginate($query, $page, $limit);
+
+        return $pagination;
     }
 }

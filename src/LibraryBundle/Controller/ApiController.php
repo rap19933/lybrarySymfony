@@ -15,20 +15,23 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class ApiController extends Controller
 {
-    public function indexAction(Request $request)
+    /*public function indexAction(Request $request)
     {
-        $cache = $this->get('cache_books_service');
-        $cacheId = $this->getParameter('cache_books_id');
-
-        if (!$cache->contains($cacheId)) {
-            $books = $this->getDoctrine()->getRepository(Book::class)->getBooks();
-            $cache->save($cacheId, $books, $this->getParameter('cache_ttl'));
-        } else {
-            $books = $cache->fetch($cacheId);
+        $limit = $request->query->getInt('limit', $this->getParameter('count_book'));
+        if ($limit > 100 ) {
+            $limit = $this->getParameter('count_book');
         }
 
-        $siteUrl = $request->getSchemeAndHttpHost();
+        $cacheTTL = $this->getParameter('cache_ttl');
+        $page = $request->query->getInt('page', 1);
 
+        $books = $this
+            ->getDoctrine()
+            ->getRepository(Book::class)
+            ->getBooks($page, $limit, $cacheTTL, $this->get('knp_paginator'));
+
+        $siteUrl = $request->getSchemeAndHttpHost();
+        $books = $books->getItems();
         foreach ($books as $book) {
             if ($book->getCover()) {
                 $book->setCover($siteUrl . $this->getParameter('cover_directory_relative') . $book->getCover());
@@ -44,8 +47,14 @@ class ApiController extends Controller
             ->build();
         $jsonContent = $serializer->serialize($books, 'json');
 
-        return new Response($jsonContent);
-    }
+        return new JsonResponse(
+            array(
+                'success' => true,
+                'error' => false,
+                'message' => $jsonContent
+            )
+        );
+    }*/
 
     public function addAction(Request $request)
     {

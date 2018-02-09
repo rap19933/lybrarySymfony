@@ -20,18 +20,11 @@ services:
         tags:
             - { name: doctrine.event_subscriber, connection: default }
         arguments:
-            - '%cover_directory%'
-            - '%book_directory%'
-            - '%cache_books_id%'
-            - '@cache_books_service'
+            - '%kernel.project_dir%/web%cover_directory_relative%'
+            - '%kernel.project_dir%/web%book_directory_relative%'
 
     library.form_trans:
         class: LibraryBundle\Form\BookType
         arguments:
             - '%locale%'
 
-    cache_books_service:
-        class: Doctrine\Common\Cache\FilesystemCache
-        arguments:
-            - '%cache_dir%'
-        public: true

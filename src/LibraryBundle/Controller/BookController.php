@@ -6,29 +6,45 @@ use LibraryBundle\Entity\Book;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
+use Symfony\Component\Filesystem\Filesystem;
+
 class BookController extends Controller
 {
     public function indexAction(Request $request)
     {
-        $countBook = $this->getParameter('count_book');
+        /*$fs = new Filesystem();
+
+        $str = '2018/01/15/ec0c2b6f66c871e05a89f9a14782a9ca.jpeg';
+        $rest = substr($str, 0, 12);
+dump($rest);
+dump($this->getParameter('cover_directory_relative'));
+dump($this->getParameter('kernel.project_dir'));
+dump($fs->exists($rest));
+        $siteUrl =
+            $this->getParameter('kernel.project_dir') .
+            '/web' .
+            $this->getParameter('cover_directory_relative') .
+            $rest;
+        dump($siteUrl);
+        dump($fs->exists($siteUrl));*/
+
+        $limit = $request->query->getInt('limit', $this->getParameter('count_book'));
+        if ($limit > 100 || $limit <= 0) {
+            $limit = $this->getParameter('count_book');
+        }
+
         $cacheTTL = $this->getParameter('cache_ttl');
-        $books = $this->getDoctrine()->getRepository(Book::class)->getBooks($countBook, $cacheTTL);
+        $page = $request->query->getInt('page', 1);
 
-        /*if ($cache->contains($cacheId)) {
-            $books = $this->getDoctrine()->getRepository(Book::class)->getBooks();
-            $cache->save($cacheId, $books, $this->getParameter('cache_ttl'));
-        } else {
-            $books = $cache->fetch($cacheId);
-        }*/
+        $books = $this
+            ->getDoctrine()
+            ->getRepository(Book::class)
+            ->getBooks($page, $limit, $cacheTTL, $this->get('knp_paginator'));
 
-        return $this->render(
-            'LibraryBundle:book:index.html.twig',
-            array(
-                'books' => $books,
-                'cover_directory_relative' => $this->getParameter('cover_directory_relative'),
-                'book_directory_relative' => $this->getParameter('book_directory_relative')
-            )
-        );
+        if (!$books->getItems()) {
+            throw $this->createNotFoundException($this->get('translator')->trans('error.404.title'));
+        }
+        return $this->render('LibraryBundle:book:index.html.twig', array('books' => $books));
     }
 
     public function newAction(Request $request)
@@ -54,14 +70,7 @@ class BookController extends Controller
 
     public function showAction(Book $book)
     {
-        return $this->render(
-            'LibraryBundle:book:show.html.twig',
-            array(
-                'cover_directory_relative' => $this->getParameter('cover_directory_relative'),
-                'book_directory_relative' => $this->getParameter('book_directory_relative'),
-                'book' => $book
-            )
-        );
+        return $this->render('LibraryBundle:book:show.html.twig', array('book' => $book));
     }
 
     public function editAction(Request $request, Book $book)

@@ -1531,7 +1531,7 @@ hr.dubble-border {margin: 0;}
 .footer-bottom p,.footer-bottom a{
 	color:#ddd;
 	font-weight:300;
-	font-size:13px;
+	font-size:20px;
 }
 .sticky .mainmenu a:hover {
   color: #ef6644 !important;
@@ -4774,4 +4774,37 @@ h2.page-title {
 }
 .right-header ul.drop-cart input[type="checkbox"]{
     width: 49%;
+}
+.navigation{
+    text-align: center;
+}
+.pagination>li>a:hover{
+    z-index: 2;
+    color: #000000;
+    background-color: #ef6644;
+    border-color: #636262;
+}
+.pagination>.active>span, .pagination>.active>span:hover {
+    color: #fff;
+    background-color: #000;
+    border-color: #000000;
+}
+.pagination>li>a, .pagination>li>span {
+    color: #000000;
+    background-color: #fff;
+    border: 1px solid #010101;
+}
+.pagination>.disabled>span{
+    color: #777;
+    background-color: #fff;
+    border-color: #000;
+}
+
+.pagination {
+    margin-top: 0px;
+    border-radius: 15px 10px 5px 0;
+}
+.footer-bottom .text-center {
+    text-align: center;
+    margin-top: 19px;
 }

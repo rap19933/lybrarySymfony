@@ -7,22 +7,23 @@ use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
 use LibraryBundle\Entity\Book;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Filesystem\Filesystem;
+use Doctrine\Common\Persistence;
+use Doctrine\ORM\Event\OnFlushEventArgs;
+use Symfony\Bundle\FrameworkBundle\Controller;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityRepository;
 
 class LibrarySubscriber implements EventSubscriber
 {
     private $coverDirectory;
     private $bookDirectory;
-    private $cacheBooksId;
     private $fs;
-    private $cacheBooksService;
 
-    public function __construct($coverDirectory, $bookDirectory, $cacheBooksId, $cacheBooksService)
+    public function __construct($coverDirectory, $bookDirectory)
     {
         $this->bookDirectory = $bookDirectory;
         $this->coverDirectory = $coverDirectory;
-        $this->cacheBooksId = $cacheBooksId;
         $this->fs = new Filesystem();
-        $this->cacheBooksService = $cacheBooksService;
     }
 
     public function getSubscribedEvents()
@@ -44,7 +45,7 @@ class LibrarySubscriber implements EventSubscriber
             if ($entity->getBookFile()) {
                 $this->fs->remove($this->bookDirectory . $entity->getBookFile());
             }
-            $this->deleteCache();
+            $this->deleteCache($args);
         }
     }
 
@@ -65,7 +66,7 @@ class LibrarySubscriber implements EventSubscriber
                 $file->move($this->bookDirectory . $directory, $fileName);
                 $entity->setBookFile($fileName);
             }
-            $this->deleteCache();
+            $this->deleteCache($args);
         }
     }
 
@@ -115,11 +116,11 @@ class LibrarySubscriber implements EventSubscriber
                     $entity->setBookFile($fileName);
                 }
             }
-            $this->deleteCache();
+            $this->deleteCache($args);
         }
     }
-    public function deleteCache()
+    public function deleteCache($args)
     {
-        $this->cacheBooksService->delete($this->cacheBooksId);
+        $args->getObjectManager()->getConfiguration()->getResultCacheImpl()->deleteAll();
     }
 }

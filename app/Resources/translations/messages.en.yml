@@ -5,10 +5,11 @@ list_books_api: List Api
 api_key: Enter the Api key
 add_books_api: Add Api
 edit_books_api: Edit Api
-name_book: Enter book name
+enter_name_book: Enter book name
 author_book: Enter author of the book
 dateRead_book: Enter the date of reading
 allow_download: Can I download it?
 id_book: Id books
 api_email_add: Enter your email
 format_date: Year-Month-Day
+intaro: Intaro Soft

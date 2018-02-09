@@ -23,9 +23,9 @@
                                                     {% endif %}
                                                 {% endif %}
                                                 {% if book.cover %}
-                                                    <img class="secondary-image" alt="Product Title" src="{{ asset(cover_directory_relative ~book.cover) }}" {{ show_img() }}>
+                                                    <img class="secondary-image" alt="Product Title" src="{{ asset(cover_directory ~book.cover) }}" {{ show_img() }}>
                                                 {% else %}
-                                                    <img class="secondary-image" alt="Product Title" src="{{ asset('img/nocover.jpg') }}">
+                                                    <img class="secondary-image" alt="Product Title" src="{{ asset('img/nocover.jpg') }}" {{ show_img() }}>
                                                 {% endif %}
                                             </div>
 
@@ -49,7 +49,7 @@
                                                 {% endif %}
 
                                                 {% if book.allowDownload and book.bookFile %}
-                                                    <a href="{{ asset(book_directory_relative ~book.bookFile) }}" target="_blank" download="" data-original-title="{{ 'download'|trans }}"><i class="fa fa-cloud-download"></i></a>
+                                                    <a href="{{ asset(book_directory ~book.bookFile) }}" target="_blank" download="" data-original-title="{{ 'download'|trans }}"><i class="fa fa-cloud-download"></i></a>
                                                 {% endif %}
                                             </div>
                                         </div>
@@ -62,4 +62,8 @@
             </div>
         </div>
     </section>
+    {# display navigation #}
+    <div class="navigation">
+        {{ knp_pagination_render(books) }}
+    </div>
 {% endblock %}

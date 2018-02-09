@@ -15,8 +15,8 @@
                                     <div class="simpleLens-big-image-container">
 
                                         {% if book.cover %}
-                                             <a class="simpleLens-lens-image" data-lightbox="roadtrip" data-lens-image="{{ asset(cover_directory_relative ~book.cover) }}" href="">
-                                                 <img class="simpleLens-big-image" alt="Product Title" src="{{ asset(cover_directory_relative ~book.cover) }}" {{ show_img(453, 600) }}>
+                                             <a class="simpleLens-lens-image" data-lightbox="roadtrip" data-lens-image="{{ asset(cover_directory ~book.cover) }}" href="">
+                                                 <img class="simpleLens-big-image" alt="Product Title" src="{{ asset(cover_directory ~book.cover) }}" {{ show_img(453, 600) }}>
                                              </a>
                                         {% else %}
                                             <a class="simpleLens-lens-image" data-lightbox="roadtrip" data-lens-image="{{ asset('img/nocover.jpg') }}" href="">
@@ -42,7 +42,7 @@
                                             <div class="product-icon">
                                                 {% if book.allowDownload and book.bookFile %}
                                                     <p class="rating-links">
-                                                        <a href="{{ asset(book_directory_relative ~book.bookFile) }}" target="_blank" download="">
+                                                        <a href="{{ asset(book_directory ~book.bookFile) }}" target="_blank" download="">
                                                             <i class="fa fa-cloud-download"></i>
                                                             {{ 'download'|trans }}
                                                         </a>
