@@ -15,7 +15,15 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class ApiController extends Controller
 {
-    /*public function indexAction(Request $request)
+    private $serializer;
+
+    public function __construct()
+    {
+        $this->serializer = SerializerBuilder::create()
+            ->setExpressionEvaluator(new ExpressionEvaluator(new ExpressionLanguage()))
+            ->build();
+    }
+    public function indexAction(Request $request)
     {
         $limit = $request->query->getInt('limit', $this->getParameter('count_book'));
         if ($limit > 100 ) {
@@ -42,10 +50,8 @@ class ApiController extends Controller
                 );
             }
         }
-        $serializer = SerializerBuilder::create()
-            ->setExpressionEvaluator(new ExpressionEvaluator(new ExpressionLanguage()))
-            ->build();
-        $jsonContent = $serializer->serialize($books, 'json');
+
+        $jsonContent = $this->serializer->serialize($books, 'json');
 
         return new JsonResponse(
             array(
@@ -54,11 +60,39 @@ class ApiController extends Controller
                 'message' => $jsonContent
             )
         );
-    }*/
+    }
 
     public function addAction(Request $request)
     {
         $requestData = $request->request->all();
+        /*unset ($requestData['apiKey']);
+        unset ($requestData['email']);*/
+
+
+        /*$requestBook = array(
+            'name' => $requestData['name'],
+            'author' => $requestData['author'],
+            'dateRead' => $requestData['dateRead'],
+            'allowDownload' => $requestData['allowDownload'],
+            );*/
+        //$book = new Book();
+        /*$jsonContent = $this->serializer->serialize($requestData, 'json');
+        return new JsonResponse(
+            array(
+                'success' => true,
+                'error' => false,
+                'message' => $requestData
+            )
+        );*/
+        $book = $this->serializer->deserialize($request->getContent(), Book::class, 'json');
+
+        return new JsonResponse(
+            array(
+                'success' => false,
+                'error' => false,
+                'message' => $book
+            )
+        );
         $this->trimData($requestData);
 
         $validator = Validation::createValidator();

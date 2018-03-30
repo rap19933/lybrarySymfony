@@ -13,3 +13,4 @@ id_book: Id books
 api_email_add: Enter your email
 format_date: Year-Month-Day
 intaro: Intaro Soft
+list_null: There are no books on the selected page

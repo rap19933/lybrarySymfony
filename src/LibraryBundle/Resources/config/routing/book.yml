@@ -35,11 +35,11 @@ book_index_api:
 book_add_api:
     path:     /api/v1/books/add/
     defaults: { _controller: "LibraryBundle:Api:add", _format: "json" }
-    methods:  POST
+    methods:  [GET, POST]
 
 book_edit_api:
     path:     /api/v1/books/{id}/edit
     defaults: { _controller: "LibraryBundle:Api:edit", _format: "json" }
-    methods:  POST
+    methods:  [GET, POST]
     requirements:
         id: \d+

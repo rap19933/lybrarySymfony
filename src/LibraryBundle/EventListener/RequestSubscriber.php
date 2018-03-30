@@ -17,7 +17,7 @@ class RequestSubscriber
 
     public function onKernelRequest(GetResponseEvent $event)
     {
-        $request = $event->getRequest();
+        /*$request = $event->getRequest();
 
         if (false !== strpos($request->attributes->get('_controller'), 'ApiController')) {
             if ($this->apiKey != $request->get('apiKey')) {
@@ -30,6 +30,6 @@ class RequestSubscriber
                 );
                 $event->setResponse($response);
             }
-        }
+        }*/
     }
 }

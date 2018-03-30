@@ -71,37 +71,20 @@
                                     </ul>
                                 </li>
                                 <script>
-                                   /* $(document).on("click", ".result", function() {
-                                        var url = $("input[name='baseURL']").val();
-                                        var apiKey = $("input[name='api_key_view']").val();
-                                        var pageView = $("input[name='api_page_view']").val();
-                                        var limitView = $("input[name='api_limit_view']").val();
-                                        $.ajax( {
-                                            url: url+"/api/v1/books/?apiKey="+apiKey,
-                                            dataType : "json",
-                                            type: "GET",
-                                            success: function (data) {
-                                                if (data.success) {
-                                                    //alert(JSON.stringify(data.message));
-                                                    alertObj(data.message);
-                                                } else {
-                                                    alertObj(data);
-                                                }
-                                            }
-                                        });
-                                    });*/
                                     $(document).on("click", ".api_list", function() {
                                         var url = $("input[name='baseURL']").val();
                                         var apiKey = $("input[name='api_key_view']").val();
                                         var pageView = $("input[name='api_page_view']").val();
                                         var limitView = $("input[name='api_limit_view']").val();
+                                        var param = '';
+                                        if (pageView) param = "&page=" + pageView;
+                                        if (limitView) param += "&limit=" + limitView;
                                         $.ajax( {
-                                            url: url+"/api/v1/books/?apiKey="+apiKey+"&page="+pageView+"&limit="+limitView,
+                                            url: url + "/api/v1/books/?apiKey=" + apiKey + param,
                                             dataType : "json",
                                             type: "GET",
                                             success: function (data) {
                                                 if (data.success) {
-                                                    //alert(JSON.stringify(data.message));
                                                     alertObj(data.message);
                                                 } else {
                                                     alertObj(data);
@@ -119,21 +102,23 @@
                                             }
                                         } else {
                                             obj = $.parseJSON(obj);
-                                                for (k in obj) {
-                                                    strProperty = "";
-                                                    $.each(obj[k], function (i, val) {
-                                                        strProperty += '<b>' + i + '</b>: ' + val + ' ';
-                                                    });
-                                                    resultObj += '<p><h6>' + k + '</h6>' + strProperty + '</p></br>';
+                                                if (obj.length){
+                                                    for (k in obj) {
+                                                        strProperty = "";
+                                                        $.each(obj[k], function (i, val) {
+                                                            strProperty += '<b>' + i + '</b>: ' + val + ' ';
+                                                        });
+                                                        resultObj += '<p><h6>' + k + '</h6>' + strProperty + '</p></br>';
+                                                    }
+                                                } else {
+                                                    alert('{{ 'list_null'|trans }}');
                                                 }
                                         }
                                         if(resultError != ""){
                                             $(".result").addClass("hidden").removeClass("visible");
-                                            //$(".result_list").css("visibility","hidden");
                                             alert(resultError);
                                         } else {
                                             $(".result_list p").html(resultObj);
-                                            //$(".result_list").css("visibility","visibility");
                                             $(".result").addClass("visible").removeClass("hidden");
                                         }
                                     }
@@ -168,22 +153,43 @@
                                     </ul>
                                 </li>
                                 <script>
-                                   $(document).on("click", ".add_books_api", function() {
+                                    $(document).on("click", ".add_books_api", function() {
+                                        var apiKey = $("input[name='api_key_add']").val();
+                                        var email = $("input[name='api_email_add']").val();
+                                        var data = {
+                                            name: $("input[name='name_book_add']").val(),
+                                            author: $("input[name='author_book_add']").val(),
+                                            dateRead: $("input[name='dateRead_book_add']").val(),
+                                            allowDownload: $("input[name='allowDownload_book_add']").prop('checked')
+                                        };
+
                                         $.ajax({
-                                            url: $("input[name='baseURL']").val()+"/api/v1/books/add/",
+                                            url: $("input[name='baseURL']").val() +
+                                            "/api/v1/books/add/?apiKey=" + apiKey +
+                                            "&email="+email,
                                             dataType : "json",
                                             type: "POST",
-                                            data:  {
-                                                    apiKey: $("input[name='api_key_add']").val(),
-                                                    email: $("input[name='api_email_add']").val(),
-                                                    name: $("input[name='name_book_add']").val(),
-                                                    author: $("input[name='author_book_add']").val(),
-                                                    dateRead: $("input[name='dateRead_book_add']").val(),
-                                                    allowDownload: $("input[name='allowDownload_book_add']").prop('checked')
-                                                },
+                                            data: JSON.stringify(data),
                                             success: function (data) {
-                                                alertObj(data);
-                                            }
+                                                if (data.success) {
+                                                    alert(JSON.stringify(data.message));
+                                                    //alert(data.message);
+                                                } else {
+                                                    alertObj(data);
+                                                }
+                                                /*alertObj(data);*/
+                                            },
+                                            statusCode: {
+                                                404: function() {
+                                                    alert("Oops! An Error Occurred\n" +
+                                                        "The server returned a \"404 Not Found\".");
+                                                },
+                                                500: function() {
+                                                    alert("Oops! An Error Occurred\n" +
+                                                        "The server returned a \"500 Internal Server Error\".");
+                                                },
+
+                                            },
                                         });
                                     });
                                 </script>

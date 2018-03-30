@@ -29,6 +29,7 @@ class Book
      *
      * @ORM\Column(name="name", type="string", length=255)
      * @Assert\NotBlank()
+     * @JMS\Type("string")
      */
     private $name;
 
@@ -37,6 +38,7 @@ class Book
      *
      * @ORM\Column(name="author", type="string", length=255)
      * @Assert\NotBlank()
+     * @JMS\Type("string")
      */
     private $author;
 
@@ -58,7 +60,7 @@ class Book
      *
      * @ORM\Column(name="book_file", type="string", length=255, nullable=true, unique=true)
      * @Assert\File(maxSize="5M")
-     * @JMS\Exclude(if="!object.getAllowDownload()")
+     * @JMS\Exclude
      */
     private $bookFile;
 
@@ -75,6 +77,8 @@ class Book
      * @var bool
      *
      * @ORM\Column(name="allow_download", type="boolean", nullable=true)
+     * @JMS\Type("boolean")
+     * @JMS\Groups("deserialize")
      * @JMS\Exclude
      */
     private $allowDownload;

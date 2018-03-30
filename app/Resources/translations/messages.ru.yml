@@ -16,3 +16,4 @@ id_book: Id книги
 api_email_add: Введите ваш email
 format_date: Год-Месяц-День
 intaro: Интаро Софт
+list_null: На выбранной странице нету книг

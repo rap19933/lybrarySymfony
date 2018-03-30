@@ -41,9 +41,9 @@ dump($fs->exists($rest));
             ->getRepository(Book::class)
             ->getBooks($page, $limit, $cacheTTL, $this->get('knp_paginator'));
 
-        if (!$books->getItems()) {
+        /*if (!$books->getItems()) {
             throw $this->createNotFoundException($this->get('translator')->trans('error.404.title'));
-        }
+        }*/
         return $this->render('LibraryBundle:book:index.html.twig', array('books' => $books));
     }
 
