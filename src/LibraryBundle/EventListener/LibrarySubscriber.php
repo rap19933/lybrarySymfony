@@ -7,11 +7,6 @@ use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
 use LibraryBundle\Entity\Book;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Filesystem\Filesystem;
-use Doctrine\Common\Persistence;
-use Doctrine\ORM\Event\OnFlushEventArgs;
-use Symfony\Bundle\FrameworkBundle\Controller;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\EntityRepository;
 
 class LibrarySubscriber implements EventSubscriber
 {

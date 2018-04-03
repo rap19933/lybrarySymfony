@@ -9,15 +9,19 @@ use Symfony\Component\HttpFoundation\Response;
 class RequestSubscriber
 {
     private $apiKey;
+    private $siteManager;
 
-    public function __construct($apiKey)
+    public function __construct($apiKey, SiteManager $siteManager)
     {
         $this->apiKey = $apiKey;
+        $this->siteManager = $siteManager;
     }
 
     public function onKernelRequest(GetResponseEvent $event)
     {
-        /*$request = $event->getRequest();
+        $request = $event->getRequest();
+
+        $this->siteManager->setCurrentSite($request->getSchemeAndHttpHost());
 
         if (false !== strpos($request->attributes->get('_controller'), 'ApiController')) {
             if ($this->apiKey != $request->get('apiKey')) {
@@ -30,6 +34,6 @@ class RequestSubscriber
                 );
                 $event->setResponse($response);
             }
-        }*/
+        }
     }
 }

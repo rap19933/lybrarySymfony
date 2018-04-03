@@ -13,9 +13,18 @@ edit_books: Редактирование книги
 invalid_api_key: Неверный api ключ
 invalid_email: Неверный email
 add_book_ok: Книга успешно добавлена
-edit_book: Книга успешно изменена
+edit_book_ok: Книга успешно изменена
 invalid_parameters: Введены не все параметры книги
 invalid_method: Не верный метод передачи
 error:
     404:
         title: 'Страница не найдена'
+form:
+    name_book: Название книги
+    author_book: Автор книги
+    cover_book: Обложка книги
+    file_book: Файл книги
+    date_read: Дата прочтения
+    allow_download: Разрешить скачивание
+    error_cover: Выберете файл формата png или jpg
+    error_file_book: Выберете файл менее 5 Мб

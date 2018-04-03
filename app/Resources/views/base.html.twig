@@ -138,7 +138,7 @@
                                             <input type="text" value="" name="name_book_add" placeholder="{{ 'enter_name_book'|trans }}">
                                         </li>
                                         <li>
-                                            <input type="text" value="" name="author_book_add" placeholder="{{ 'enter_author_book'|trans }}">
+                                            <input type="text" value="" name="author_book_add" placeholder="{{ 'author_book'|trans }}">
                                         </li>
                                         <li>
                                             {{ 'dateRead_book'|trans }}
@@ -159,8 +159,8 @@
                                         var data = {
                                             name: $("input[name='name_book_add']").val(),
                                             author: $("input[name='author_book_add']").val(),
-                                            dateRead: $("input[name='dateRead_book_add']").val(),
-                                            allowDownload: $("input[name='allowDownload_book_add']").prop('checked')
+                                            date_read: $("input[name='dateRead_book_add']").val(),
+                                            allow_download: $("input[name='allowDownload_book_add']").prop('checked')
                                         };
 
                                         $.ajax({
@@ -173,11 +173,9 @@
                                             success: function (data) {
                                                 if (data.success) {
                                                     alert(JSON.stringify(data.message));
-                                                    //alert(data.message);
                                                 } else {
                                                     alertObj(data);
                                                 }
-                                                /*alertObj(data);*/
                                             },
                                             statusCode: {
                                                 404: function() {
@@ -224,20 +222,27 @@
                                 </li>
                                 <script>
                                     $(document).on("click", ".edit_books_api", function() {
+                                        var dateRead;
+                                        if ($("input[name='dateRead_book_edit']").val()) {
+                                            dateRead = $("input[name='dateRead_book_edit']").val();
+                                        } else {
+                                            dateRead = null;
+                                        }
+                                        console.log(dateRead);
+                                        var data = {
+                                            name: $("input[name='name_book_edit']").val(),
+                                            author: $("input[name='author_book_edit']").val(),
+                                            date_read: dateRead,
+                                            allow_download: $("input[name='allowDownload_book_edit']").prop('checked')
+                                        };
                                         $.ajax({
                                             url: $("input[name='baseURL']").val() +
                                                 "/api/v1/books/" +
                                                 $("input[name='api_id_edit']").val() +
-                                                "/edit",
+                                                "/edit?apiKey=" + $("input[name='api_key_edit']").val(),
                                             dataType : "json",
                                             type: "POST",
-                                            data: {
-                                                    apiKey: $("input[name='api_key_edit']").val(),
-                                                    name: $("input[name='name_book_edit']").val(),
-                                                    author: $("input[name='author_book_edit']").val(),
-                                                    dateRead: $("input[name='dateRead_book_edit']").val(),
-                                                    allowDownload: $("input[name='allowDownload_book_edit']").prop('checked')
-                                                },
+                                            data: JSON.stringify(data),
                                             statusCode: {
                                                 404: function() {
                                                     alert("Oops! An Error Occurred\n" +

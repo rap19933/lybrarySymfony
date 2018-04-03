@@ -16,3 +16,13 @@ add_book_ok: Add book
 edit_book: Edit book
 invalid_parameters: Invalid parameters
 invalid_method: Invalid method
+
+form:
+    name_book: Name book
+    author_book: Author book
+    cover_book: Cover book
+    file_book: File book
+    date_read: Date of reading
+    allow_download: Allow downloading
+    error_cover: Select file png or jpg
+    error_file_book: Select file less than 5 MB

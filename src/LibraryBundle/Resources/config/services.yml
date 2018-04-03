@@ -1,7 +1,20 @@
 services:
+    site_manager:
+        class: 'LibraryBundle\EventListener\SiteManager'
+
     library.request.listener:
         class: LibraryBundle\EventListener\RequestSubscriber
         arguments:
             - '%secret%'
+            - "@site_manager"
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+
+    library.serializer.listener:
+        class: 'LibraryBundle\EventListener\SerializerSubscriber'
+        arguments:
+            - '%cover_directory_relative%'
+            - '%book_directory_relative%'
+            - '@site_manager'
+        tags:
+            - { name: jms_serializer.event_subscriber }

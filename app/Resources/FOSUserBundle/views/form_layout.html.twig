@@ -1,7 +1,6 @@
 {% use "form_div_layout.html.twig" %}
 
 {% block file_widget %}
-   {# {{ dump() }}#}
     <div class="col-md-10">
         {% if data and form.parent.vars.value.id and (name == "cover" or name == "bookFile") %}
             <div class="buttons-file-del" >

@@ -5,13 +5,10 @@ namespace LibraryBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use LibraryBundle\Entity\Book;
 use JMS\Serializer\Expression\ExpressionEvaluator;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 use JMS\Serializer\SerializerBuilder;
-use Symfony\Component\Validator\Validation;
-use Symfony\Component\Validator\Constraints as Assert;
 
 class ApiController extends Controller
 {
@@ -21,6 +18,7 @@ class ApiController extends Controller
     {
         $this->serializer = SerializerBuilder::create()
             ->setExpressionEvaluator(new ExpressionEvaluator(new ExpressionLanguage()))
+            ->addDefaultListeners()
             ->build();
     }
     public function indexAction(Request $request)
@@ -38,174 +36,84 @@ class ApiController extends Controller
             ->getRepository(Book::class)
             ->getBooks($page, $limit, $cacheTTL, $this->get('knp_paginator'));
 
-        $siteUrl = $request->getSchemeAndHttpHost();
         $books = $books->getItems();
-        foreach ($books as $book) {
-            if ($book->getCover()) {
-                $book->setCover($siteUrl . $this->getParameter('cover_directory_relative') . $book->getCover());
-            }
-            if ($book->getBookFile()) {
-                $book->setBookFile(
-                    $siteUrl . $this->getParameter('book_directory_relative') . $book->getBookFile()
-                );
-            }
-        }
 
-        $jsonContent = $this->serializer->serialize($books, 'json');
+        $jsonContent = $this->get('jms_serializer')->serialize($books, 'json');
 
-        return new JsonResponse(
-            array(
-                'success' => true,
-                'error' => false,
-                'message' => $jsonContent
-            )
-        );
+        return $this->response(true, false, $jsonContent);
     }
 
     public function addAction(Request $request)
     {
-        $requestData = $request->request->all();
-        /*unset ($requestData['apiKey']);
-        unset ($requestData['email']);*/
-
-
-        /*$requestBook = array(
-            'name' => $requestData['name'],
-            'author' => $requestData['author'],
-            'dateRead' => $requestData['dateRead'],
-            'allowDownload' => $requestData['allowDownload'],
-            );*/
-        //$book = new Book();
-        /*$jsonContent = $this->serializer->serialize($requestData, 'json');
-        return new JsonResponse(
-            array(
-                'success' => true,
-                'error' => false,
-                'message' => $requestData
-            )
-        );*/
-        $book = $this->serializer->deserialize($request->getContent(), Book::class, 'json');
-
-        return new JsonResponse(
-            array(
-                'success' => false,
-                'error' => false,
-                'message' => $book
-            )
-        );
-        $this->trimData($requestData);
-
-        $validator = Validation::createValidator();
-        $violations = $validator->validate(
-            $requestData['email'],
-            array(new Assert\Email(), new Assert\NotBlank())
-        );
-        if ($violation = $this->checkValidator($violations)) {
-            return new JsonResponse(array('success' => false, 'error' => 402, 'message' => $violation));
-        }
-
-        $violations = $validator->validate(
-            $requestData['dateRead'],
-            array(new Assert\Date(), new Assert\NotBlank())
-        );
-        if ($violation = $this->checkValidator($violations)) {
-            return new JsonResponse(array('success' => false, 'error' => 402, 'message' => $violation));
-        }
-
-        if (!empty($requestData['name']) && !empty($requestData['author'])) {
+        if (filter_var($request->query->get('email'), FILTER_VALIDATE_EMAIL)) {
             $repository = $this->getDoctrine()->getRepository('LibraryBundle:User');
-            $user = $repository->findOneBy(array('email' => $requestData['email']));
-            if (!$user) {
-                return new JsonResponse(
-                    array(
-                        'success' => false,
-                        'error' => 402,
-                        'message' => $this->get('translator')->trans('invalid_email')
-                    )
-                );
-            }
-
-            $book = new Book();
-            $book->setName($requestData['name']);
-            $book->setAuthor($requestData['author']);
-            $book->setDateRead(new \DateTime($requestData['dateRead']));
-            $book->setAllowDownload($requestData['allowDownload']);
-            $book->setUser($user);
-
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($book);
-            $em->flush();
-
-            return new JsonResponse(
-                array(
-                    'success' => true,
-                    'error' => false,
-                    'message' => $this->get('translator')->trans('add_book_ok')
-                )
-            );
-        } else {
-            return new JsonResponse(
-                array(
-                    'success' => false,
-                    'error' => 402,
-                    'message' => $this->get('translator')->trans('invalid_parameters')
-                )
-            );
+            $user = $repository->findOneBy(array('email' => $request->query->get('email')));
         }
+        $error = [];
+        if (!isset($user)) {
+            $error[] = $this->get('translator')->trans('invalid_email');
+        }
+
+        try {
+            $book = $this->get('jms_serializer')->deserialize($request->getContent(), Book::class, 'json');
+        } catch (\Exception $e) {
+            $error[] = $e->getMessage();
+        }
+
+        if (empty($error)) {
+            if (!count($this->get('validator')->validate($book))) {
+                $book->setUser($user);
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($book);
+                $em->flush();
+                return $this->response(true, false, $this->get('translator')->trans('add_book_ok'));
+            } else {
+                $error[] = $this->get('translator')->trans('invalid_parameters');
+            }
+        }
+
+        return $this->response(false, 402, $error);
     }
 
     public function editAction(Request $request, Book $book)
     {
-        $requestData = $request->request->all();
-        $this->trimData($requestData);
 
-        if (!empty($requestData['name'])) {
-            $book->setName($requestData['name']);
+        try {
+            $bookEdit = $this->get('jms_serializer')->deserialize($request->getContent(), Book::class, 'json');
+        } catch (\Exception $e) {
+            return $this->response(false, 402, $e->getMessage());
         }
-        if (!empty($requestData['author'])) {
-            $book->setAuthor($requestData['author']);
+
+        if (!empty($bookEdit->getName())) {
+            $book->setName($bookEdit->getName());
         }
-        if (!empty($requestData['dateRead'])) {
-            $violations = Validation::createValidator()->validate($requestData['dateRead'], array(new Assert\Date()));
-            if ($violation = $this->checkValidator($violations)) {
-                return new JsonResponse(
-                    array(
-                        'success' => false,
-                        'error' => 402,
-                        'message' => $violation
-                    )
-                );
-            }
-            $book->setDateRead(new \DateTime($requestData['dateRead']));
+        if (!empty($bookEdit->getAuthor())) {
+            $book->setAuthor($bookEdit->getAuthor());
         }
-        $book->setAllowDownload($requestData['allowDownload']);
+        if (!empty($bookEdit->getDateRead())) {
+            $book->setDateRead($bookEdit->getDateRead());
+        }
+        if (!empty($bookEdit->getAllowDownload())) {
+            $book->setAllowDownload(1);
+        }  else {
+            $book->setAllowDownload(0);
+        }
 
         $em = $this->getDoctrine()->getManager();
         $em->persist($book);
         $em->flush();
 
+        return $this->response(true, false, $this->get('translator')->trans('edit_book_ok'));
+    }
+
+    private function response($success, $error, $message)
+    {
         return new JsonResponse(
             array(
-                'success' => true,
-                'error' => false,
-                'message' => $this->get('translator')->trans('edit_book')
+                'success' => $success,
+                'error' => $error,
+                'message' => $message
             )
         );
-    }
-
-    private function trimData(&$data)
-    {
-        foreach ($data as $key => $value) {
-            $data[$key] = trim($value);
-        }
-    }
-
-    private function checkValidator($violations)
-    {
-        if (count($violations) !== 0) {
-            foreach ($violations as $violation) {
-                return $violation->getMessage();
-            }
-        }
     }
 }

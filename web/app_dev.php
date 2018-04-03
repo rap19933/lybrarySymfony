@@ -1,5 +1,34 @@
 <?php
+function asd($arr=false, $params=false) {
+    if ($params) {
+        $str = 'class="prered"';
+        $strTime = 'class="timParams"';
+    } else {
+        $str = 'class="preblack"';
+        $strTime = 'class="tim"';
+    }
 
+    echo "<style type=\"text/css\">
+                div.tim {font-size:12px; color: blue;}
+                div.timParams {font-size:12px; color: green;}
+                div.prered {font-size:10px; color: red;}
+                div.preblack {font-size:10px;  text-align: left;}
+          </style>";
+    echo "<div $strTime>";
+    echo date("H:i:s"). substr((string)microtime(), 1, 6)."</br>";
+    echo "</div>";
+
+    echo "<div $str>";
+    echo "<pre>";
+    print_r($arr);
+    echo "</pre>";
+    echo "</div>";
+}
+function asdd($arr=false) {
+    echo "<pre>";
+    print_r($arr);
+    echo "</pre>";
+}
 use Symfony\Component\Debug\Debug;
 use Symfony\Component\HttpFoundation\Request;
 

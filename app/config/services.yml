@@ -22,9 +22,3 @@ services:
         arguments:
             - '%kernel.project_dir%/web%cover_directory_relative%'
             - '%kernel.project_dir%/web%book_directory_relative%'
-
-    library.form_trans:
-        class: LibraryBundle\Form\BookType
-        arguments:
-            - '%locale%'
-

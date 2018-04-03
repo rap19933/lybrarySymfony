@@ -21,6 +21,7 @@ class Book
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @JMS\Type("integer")
      */
     private $id;
 
@@ -52,6 +53,7 @@ class Book
      *      "image/jpeg"
      *     },
      * )
+     * @JMS\Type("string")
      */
     private $cover;
 
@@ -60,7 +62,7 @@ class Book
      *
      * @ORM\Column(name="book_file", type="string", length=255, nullable=true, unique=true)
      * @Assert\File(maxSize="5M")
-     * @JMS\Exclude
+     * @JMS\Type("string")
      */
     private $bookFile;
 
@@ -68,6 +70,7 @@ class Book
      * @var \DateTime
      *
      * @ORM\Column(name="date_read", type="datetime")
+     * @Assert\NotBlank()
      * @Assert\Type("\DateTime")
      * @JMS\Type("DateTime<'Y-m-d'>")
      */
@@ -78,13 +81,12 @@ class Book
      *
      * @ORM\Column(name="allow_download", type="boolean", nullable=true)
      * @JMS\Type("boolean")
-     * @JMS\Groups("deserialize")
-     * @JMS\Exclude
      */
     private $allowDownload;
 
     /**
      * @ORM\ManyToOne(targetEntity="LibraryBundle\Entity\User", inversedBy="book")
+     * @JMS\Type("LibraryBundle\Entity\User")
      * @JMS\Exclude
      */
     private $user;
